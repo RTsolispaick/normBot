@@ -2,6 +2,7 @@ package org.opp.bots;
 
 
 import org.opp.core.Bot;
+import org.opp.core.Logic;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -34,8 +35,8 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
         if (update.hasMessage()) {
             Message m = update.getMessage();
             if (m.hasText()) {
-                // String text =  there will be logic
-                // sendMessage(m.getChatId(), text);
+                String response = Logic.massageHandler(m.getText());
+                sendMessage(m.getChatId(), response);
             }
         }
     }
