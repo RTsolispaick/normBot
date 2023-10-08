@@ -1,13 +1,10 @@
 package org.opp;
 
-/**
- * Hello world!
- *
- */
-public class Main
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+import org.opp.bots.TelegramBot;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+public class Main {
+    public static void main(String[] args){
+        TelegramBot.launch();
     }
 }
