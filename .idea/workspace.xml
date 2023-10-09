@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f80fa424-c773-45b6-8aaa-969e21959470" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/opp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/opp/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/opp/bots/TelegramBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/opp/bots/TelegramBot.java" afterDir="false" />
-    </list>
+    <list default="true" id="f80fa424-c773-45b6-8aaa-969e21959470" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
