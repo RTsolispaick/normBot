@@ -14,6 +14,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramBot extends TelegramLongPollingBot implements Bot {
     private String token;
     private String name;
+    private Logic telegramLogic = new Logic();
 
     public TelegramBot(String name, String token) {
         this.name = name;
@@ -35,7 +36,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
         if (update.hasMessage()) {
             Message m = update.getMessage();
             if (m.hasText()) {
-                String response = Logic.massageHandler(m.getText());
+                String response = telegramLogic.massageHandler(m.getText());
                 sendMessage(m.getChatId(), response);
             }
         }
