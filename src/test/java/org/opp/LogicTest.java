@@ -1,7 +1,7 @@
 package org.opp;
 
-import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opp.core.Logic;
 
@@ -14,7 +14,7 @@ public class LogicTest {
     /**
      *  Инициализируем объект тестируемого класса
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         testLogic = new Logic();
     }
