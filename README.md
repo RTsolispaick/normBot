@@ -15,5 +15,10 @@ git clone https://github.com/RTsolispaick/normBot.git
 ```
 2. Enter your token and bot name.
 
-
 3. And run.
+
+## Example of using a bot
+
+![][logo]
+
+[logo]: task1_example.png

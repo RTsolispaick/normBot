@@ -1,5 +1,6 @@
 package org.opp;
 
+import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.opp.core.Logic;
@@ -8,7 +9,15 @@ import org.opp.core.Logic;
  * Тест класса Logic
  */
 public class LogicTest {
-    Logic testLogic = new Logic();
+    private Logic testLogic;
+
+    /**
+     *  Инициализируем объект тестируемого класса
+     */
+    @Before
+    public void setUp() {
+        testLogic = new Logic();
+    }
 
     /**
      * Тест для метода messageHandler:
