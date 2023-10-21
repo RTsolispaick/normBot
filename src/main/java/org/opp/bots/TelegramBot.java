@@ -1,8 +1,8 @@
 package org.opp.bots;
 
 
-import org.opp.core.Bot;
-import org.opp.core.Logic;
+import org.opp.core.handler.IdleHandler;
+import org.opp.utils.Config;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,12 +15,13 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  * Класс телеграмм бота
  */
 public class TelegramBot extends TelegramLongPollingBot implements Bot {
-    private String token;
-    private String name;
-    private Logic telegramLogic = new Logic();
+    private final String token;
+    private final String name;
+    private final IdleHandler telegramIdleHandler = new IdleHandler();
 
     /**
      * Конструктор ТГ бота
+     *
      * @param name
      * @param token
      */
@@ -31,14 +32,17 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
 
     /**
      * метод для получения имени бота
+     *
      * @return
      */
     @Override
     public String getBotUsername() {
         return this.name;
     }
+
     /**
      * метод для получения токена бота
+     *
      * @return
      */
     @Override
@@ -48,6 +52,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
 
     /**
      * реакция на сообщения пользователя
+     *
      * @param update
      */
     @Override
@@ -55,7 +60,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
         if (update.hasMessage()) {
             Message m = update.getMessage();
             if (m.hasText()) {
-                String response = telegramLogic.massageHandler(m.getText());
+                String response = telegramIdleHandler.massageHandler(m.getText());
                 sendMessage(m.getChatId(), response);
             }
         }
@@ -63,6 +68,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
 
     /**
      * Отправка сообщений
+     *
      * @param id
      * @param message
      */
@@ -86,7 +92,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
     public static void launch() {
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(new TelegramBot("bot-username", "bot-token"));
+            botsApi.registerBot(new TelegramBot(Config.getName(), Config.getToken()));
         } catch (Exception e) {
             System.err.println(e);
         }

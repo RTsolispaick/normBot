@@ -2,7 +2,7 @@ package org.opp;
 
 import org.opp.bots.TelegramBot;
 /**
-Класс Main
+ *Класс Main
  */
 public class Main {
     public static void main(String[] args){

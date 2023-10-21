@@ -1,4 +1,4 @@
-package org.opp.core;
+package org.opp.bots;
 
 /**
  * Интерфейс бота

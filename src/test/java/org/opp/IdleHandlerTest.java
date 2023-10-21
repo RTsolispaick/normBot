@@ -3,20 +3,20 @@ package org.opp;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opp.core.Logic;
+import org.opp.core.handler.IdleHandler;
 
 /**
  * Тест класса Logic
  */
-public class LogicTest {
-    private Logic testLogic;
+public class IdleHandlerTest {
+    private IdleHandler testIdleHandler;
 
     /**
      *  Инициализируем объект тестируемого класса
      */
     @BeforeEach
     public void setUp() {
-        testLogic = new Logic();
+        testIdleHandler = new IdleHandler();
     }
 
     /**
@@ -27,8 +27,8 @@ public class LogicTest {
      */
     @Test
     public void messageHandler_Test() {
-        Assertions.assertEquals(testLogic.massageHandler("/start"), "Hello, write something!");
-        Assertions.assertEquals(testLogic.massageHandler("/help"), "Just write something.");
-        Assertions.assertEquals(testLogic.massageHandler("Kostya"), "Kostya");
+        Assertions.assertEquals("Hello, write something!", testIdleHandler.massageHandler("/start"));
+        Assertions.assertEquals( "Just write something.", testIdleHandler.massageHandler("/help"));
+        Assertions.assertEquals("Kostya", testIdleHandler.massageHandler("Kostya"));
     }
 }
