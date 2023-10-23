@@ -27,8 +27,6 @@ public class IdleHandlerTest {
      */
     @Test
     public void messageHandler_Test() {
-        Assertions.assertEquals("Hello, write something!", testIdleHandler.massageHandler("/start"));
-        Assertions.assertEquals( "Just write something.", testIdleHandler.massageHandler("/help"));
-        Assertions.assertEquals("Kostya", testIdleHandler.massageHandler("Kostya"));
+        Assertions.assertEquals("Я тебя не понял. Попробуй написать ещё раз!", testIdleHandler.getAnswer("Kostya"));
     }
 }
