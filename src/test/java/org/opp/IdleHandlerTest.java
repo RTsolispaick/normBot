@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.opp.core.handler.IdleHandler;
 
 /**
- * Тест класса Logic
+ * Тест класса IdleHandlerTest
  */
 public class IdleHandlerTest {
     private IdleHandler testIdleHandler;
@@ -21,9 +21,7 @@ public class IdleHandlerTest {
 
     /**
      * Тест для метода messageHandler:
-     * 1) Для команды /start
-     * 2) Для команды /help
-     * 3) Для произвольного сообщения
+     * 1) Для произвольного сообщения
      */
     @Test
     public void messageHandler_Test() {

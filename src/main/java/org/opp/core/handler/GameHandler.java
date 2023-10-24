@@ -5,7 +5,6 @@ import org.opp.essence.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
 /**
  *
@@ -25,14 +24,12 @@ public class GameHandler {
         user.setNumberOfLives(10);
         user.setMapOfIndexesForEachLetter(new HashMap<>());
 
-        IntStream.range(0, word.length()).forEach(i -> {
-            if (user.getMapOfIndexesForEachLetter().containsKey(word.charAt(i))) {
-                user.getMapOfIndexesForEachLetter().get(word.charAt(i)).add(2 * i);
-            } else {
+        for(int i = 0; i < word.length(); i++) {
+            if (!user.getMapOfIndexesForEachLetter().containsKey(word.charAt(i))) {
                 user.getMapOfIndexesForEachLetter().put(word.charAt(i), new ArrayList<>());
-                user.getMapOfIndexesForEachLetter().get(word.charAt(i)).add(2 * i);
             }
-        });
+            user.getMapOfIndexesForEachLetter().get(word.charAt(i)).add(2 * i);
+        }
 
         return "Загадано слово: " + user.getGameViewOfTheWord() + "\n" +
                 "У тебя есть " + user.getNumberOfLives() + " жизней";
@@ -48,7 +45,7 @@ public class GameHandler {
         if (message.length() > 1) {
             return "Тебе нужно вывести одну букву на русском языке!";
         }
-        if (!Pattern.compile("[а-я]").matcher(message).matches()) {
+        if (!Pattern.compile("[а-я]").matcher(message).matches() && message.charAt(0) != 'ё') {
             return "В слове есть только буквы русского алфавита!";
         }
         if (user.getWord().contains(message) &&
@@ -58,16 +55,16 @@ public class GameHandler {
         }
 
         if (user.getMapOfIndexesForEachLetter().containsKey(message.charAt(0))) {
-            user.getMapOfIndexesForEachLetter().get(message.charAt(0)).forEach(i -> {
+            for (Integer i : user.getMapOfIndexesForEachLetter().get(message.charAt(0))) {
                 user.getGameViewOfTheWord().setCharAt(i, message.charAt(0));
-            });
+            }
 
             user.getMapOfIndexesForEachLetter().remove(message.charAt(0));
 
             if (user.getMapOfIndexesForEachLetter().isEmpty())
                 return "Молодец! Ты отгадал слово: " + user.getWord() + "!\n" +
                         "Если хочешь сыграть ещё раз напиши /game";
-            return "Правильно!. У тебя осталось " + Integer.toString(user.getNumberOfLives()) + " жизней.\n" +
+            return "Правильно!. У тебя осталось " + user.getNumberOfLives() + " жизней.\n" +
                     "Исключили: " + user.getWordFromExcludedLetters() + "\n\n" +
                     user.getGameViewOfTheWord();
         }
@@ -78,7 +75,7 @@ public class GameHandler {
             if (user.getNumberOfLives() == 0)
                 return "Ты проиграл! Загаданое слово: " + user.getWord() + "!\n" +
                         "Если хочешь сыграть ещё раз напиши /game";
-            return "Не угадал! У тебя осталось " + Integer.toString(user.getNumberOfLives()) + " жизней.\n" +
+            return "Не угадал! У тебя осталось " + user.getNumberOfLives() + " жизней.\n" +
                     "Исключили: " + user.getWordFromExcludedLetters() + "\n\n" +
                     user.getGameViewOfTheWord();
         }
