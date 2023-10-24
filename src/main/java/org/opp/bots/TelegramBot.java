@@ -1,8 +1,9 @@
 package org.opp.bots;
 
 
-import org.opp.core.Bot;
-import org.opp.core.Logic;
+import org.opp.core.Manager;
+import org.opp.essence.User;
+import org.opp.utils.Config;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,51 +12,56 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Класс телеграмм бота
  */
 public class TelegramBot extends TelegramLongPollingBot implements Bot {
-    private String token;
-    private String name;
-    private Logic telegramLogic = new Logic();
+    private final String token;
+    private final String name;
+    private Map<Long, User> db;
+    private final Manager telegramManager;
 
     /**
      * Конструктор ТГ бота
-     * @param name
-     * @param token
+     *
+     * @param name имя бота
+     * @param token токен
      */
     public TelegramBot(String name, String token) {
         this.name = name;
         this.token = token;
+        db = new HashMap<>();
+        telegramManager = new Manager();
     }
 
-    /**
-     * метод для получения имени бота
-     * @return
-     */
+
     @Override
     public String getBotUsername() {
         return this.name;
     }
-    /**
-     * метод для получения токена бота
-     * @return
-     */
+
     @Override
     public String getBotToken() {
         return this.token;
     }
 
     /**
-     * реакция на сообщения пользователя
-     * @param update
+     * Приём и обработка сообщений пользователя
+     *
+     * @param update - получение новых действий пользователя
      */
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             Message m = update.getMessage();
             if (m.hasText()) {
-                String response = telegramLogic.massageHandler(m.getText());
+                if (!db.containsKey(m.getChatId())) {
+                    db.put(m.getChatId(), new User());
+                }
+                String response = telegramManager.chooseState(m.getText().toLowerCase(), db.get(m.getChatId()));
                 sendMessage(m.getChatId(), response);
             }
         }
@@ -63,8 +69,9 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
 
     /**
      * Отправка сообщений
-     * @param id
-     * @param message
+     *
+     * @param id - id пользователя
+     * @param message - текст
      */
     @Override
     public void sendMessage(Long id, String message) {
@@ -86,7 +93,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
     public static void launch() {
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(new TelegramBot("bot-username", "bot-token"));
+            botsApi.registerBot(new TelegramBot(Config.getName(), Config.getToken()));
         } catch (Exception e) {
             System.err.println(e);
         }
