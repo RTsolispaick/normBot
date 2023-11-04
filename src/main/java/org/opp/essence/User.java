@@ -2,9 +2,6 @@ package org.opp.essence;
 
 import org.opp.core.State;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Класс пользователя
  */
@@ -14,7 +11,7 @@ public class User {
     private StringBuilder gameViewOfTheWord;
     private StringBuilder wordFromExcludedLetters;
     private int numberOfLives;
-    private Map<Character, List<Integer>> mapOfIndexesForEachLetter;
+    private int statusGame;
 
     /**
      * Конструкток пользователя
@@ -25,25 +22,34 @@ public class User {
 
     public void setStateIdle(){
         this.state = State.IDLE;
-        word = null;
-        gameViewOfTheWord = null;
-        numberOfLives = 0;
-        mapOfIndexesForEachLetter = null;
-        wordFromExcludedLetters = null;
+        this.word = null;
+        this.gameViewOfTheWord = null;
+        this.wordFromExcludedLetters = null;
+        this.numberOfLives = 0;
+        this.statusGame = -1;
     }
 
-    public void setStateGame(){
+    public void setStateGame(String word){
         this.state = State.GAME;
+        this.word = word;
+        this.gameViewOfTheWord = new StringBuilder("_ ".repeat(word.length() - 1)).append("_");
+        this.wordFromExcludedLetters = new StringBuilder();
+        this.numberOfLives = 10;
+        this.statusGame = -1;
     }
+
     public State getState(){
         return state;
     }
+
     public String getWord() {
         return word;
     }
+
     public void setWord(String word) {
         this.word = word;
     }
+
     public StringBuilder getGameViewOfTheWord() {
         return gameViewOfTheWord;
     }
@@ -51,6 +57,7 @@ public class User {
     public void setGameViewOfTheWord(StringBuilder gameViewOfTheWord) {
         this.gameViewOfTheWord = gameViewOfTheWord;
     }
+
     public StringBuilder getWordFromExcludedLetters() {
         return wordFromExcludedLetters;
     }
@@ -67,11 +74,7 @@ public class User {
         this.numberOfLives = numberOfLives;
     }
 
-    public Map<Character, List<Integer>> getMapOfIndexesForEachLetter() {
-        return mapOfIndexesForEachLetter;
-    }
+    public int getStatusGame() {return statusGame;}
 
-    public void setMapOfIndexesForEachLetter(Map<Character, List<Integer>> mapOfIndexesForEachLetter) {
-        this.mapOfIndexesForEachLetter = mapOfIndexesForEachLetter;
-    }
+    public void setStatusGame(int statusGame) {this.statusGame = statusGame;}
 }

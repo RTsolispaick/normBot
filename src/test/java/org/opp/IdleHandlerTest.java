@@ -1,8 +1,8 @@
 package org.opp;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.opp.core.handler.IdleHandler;
 
 /**
@@ -14,7 +14,7 @@ public class IdleHandlerTest {
     /**
      *  Инициализируем объект тестируемого класса
      */
-    @BeforeEach
+    @Before
     public void setUp() {
         testIdleHandler = new IdleHandler();
     }
@@ -25,6 +25,6 @@ public class IdleHandlerTest {
      */
     @Test
     public void messageHandler_Test() {
-        Assertions.assertEquals("Я тебя не понял. Попробуй написать ещё раз!", testIdleHandler.getAnswer("Kostya"));
+        Assert.assertEquals("Я тебя не понял. Попробуй написать ещё раз!", testIdleHandler.getAnswer("Kostya"));
     }
 }

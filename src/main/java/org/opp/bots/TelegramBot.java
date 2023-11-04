@@ -21,7 +21,7 @@ import java.util.Map;
 public class TelegramBot extends TelegramLongPollingBot implements Bot {
     private final String token;
     private final String name;
-    private Map<Long, User> db;
+    private final Map<Long, User> db;
     private final Manager telegramManager;
 
     /**
@@ -81,7 +81,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
                 .build();
 
         try {
-            execute(msg).getMessageId();
+            execute(msg);
         } catch (TelegramApiException e) {
             System.err.println(e);
         }
