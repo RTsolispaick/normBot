@@ -6,13 +6,13 @@ import org.opp.data.StorageWord;
 import org.opp.essence.User;
 
     /**
-       * Управление состоянием игры
-       */
+     * Управление состоянием игры
+     */
 
 public class Manager {
-    private  IdleHandler idleHandler;
-    private GameHandler gameHandler;
-    private StorageWord storageWord;
+    private final IdleHandler idleHandler;
+    private final GameHandler gameHandler;
+    private final StorageWord storageWord;
 
     public Manager() {
         gameHandler = new GameHandler();
@@ -28,18 +28,19 @@ public class Manager {
      */
     public String chooseState(String message, User user) {
         String response;
-        switch (user.getState()) {
-            case IDLE:
+        return switch (user.getState()) {
+            case IDLE -> {
                 if (message.equals("/game")) {
-                    user.setStateGame();
-                    response = gameHandler.startGame(storageWord.wordChoice(), user);
+                    user.setStateGame(storageWord.wordChoice());
+                    response = gameHandler.getAnswer(message, user);
                 } else if (message.equals("/stop")) {
                     response = "Вы не находитесь в игре!\nЕсли хотите начать игру напишите /game";
                 } else {
                     response = idleHandler.getAnswer(message);
                 }
-                return response;
-            case GAME:
+                yield response;
+            }
+            case GAME -> {
                 if (message.equals("/stop")) {
                     user.setStateIdle();
                     response = idleHandler.getAnswer(message);
@@ -51,9 +52,8 @@ public class Manager {
                         user.setStateIdle();
                     }
                 }
-                return response;
-            default:
-                throw new RuntimeException("incorrect choose state");
-        }
+                yield response;
+            }
+        };
     }
 }
