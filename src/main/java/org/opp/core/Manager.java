@@ -48,7 +48,7 @@ public class Manager {
                     response = "Игра и так идёт!\nЕсли хотите остановить игру напишите /stop";
                 } else {
                     response = gameHandler.getAnswer(message, user);
-                    if (response.contains("/game")) {
+                    if (user.getStatusGame() == 1) {
                         user.setStateIdle();
                     }
                 }

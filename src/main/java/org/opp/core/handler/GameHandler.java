@@ -19,7 +19,7 @@ public class GameHandler {
      */
     public String getAnswer(String message, User user) {
         if (user.getStatusGame() == -1) {
-            user.setStatusGame(1);
+            user.setStatusGame(0);
             return "Загадано слово: " + user.getGameViewOfTheWord() + "\n" +
                     "У тебя есть " + user.getNumberOfLives() + " жизней";
         }
@@ -29,8 +29,8 @@ public class GameHandler {
         if (!Pattern.compile("[а-я]").matcher(message).matches() && message.charAt(0) != 'ё') {
             return "В слове есть только буквы русского алфавита!";
         }
-        if (user.getGameViewOfTheWord().indexOf(message) != -1 ||
-                user.getWordFromExcludedLetters().indexOf(message) != -1) {
+        if (user.getGameViewOfTheWord().contains(message) ||
+                user.getWordFromExcludedLetters().contains(message)) {
             return "Ты уже вводил эту букву! Попробуй другую.";
         }
 
@@ -39,24 +39,32 @@ public class GameHandler {
 
             for (int i = 0; i < word.length(); i++) {
                 if (word.charAt(i) == message.charAt(0)) {
-                    user.getGameViewOfTheWord().setCharAt(i * 2, message.charAt(0));
+                    user.setGameViewOfTheWord(user.getGameViewOfTheWord().substring(0, i * 2) + message.charAt(0) +
+                            user.getGameViewOfTheWord().substring(i * 2 + 1));
                 }
             }
 
-            if (user.getGameViewOfTheWord().indexOf("_") == -1)
+            if (!user.getGameViewOfTheWord().contains("_")) {
+                user.setStatusGame(1);
+                user.setTotalWin(user.getTotalWin() + 1);
+
                 return "Молодец! Ты отгадал слово: " + user.getWord() + "!\n" +
                         "Если хочешь сыграть ещё раз напиши /game";
+            }
             return "Правильно!. У тебя осталось " + user.getNumberOfLives() + " жизней.\n" +
                     "Исключили: " + user.getWordFromExcludedLetters() + "\n\n" +
                     user.getGameViewOfTheWord();
         }
         else {
             user.setNumberOfLives(user.getNumberOfLives() - 1);
-            user.getWordFromExcludedLetters().append(message.charAt(0));
+            user.setWordFromExcludedLetters(user.getWordFromExcludedLetters() + message.charAt(0));
 
-            if (user.getNumberOfLives() == 0)
+            if (user.getNumberOfLives() <= 0) {
+                user.setStatusGame(1);
+
                 return "Ты проиграл! Загаданое слово: " + user.getWord() + "!\n" +
                         "Если хочешь сыграть ещё раз напиши /game";
+            }
             return "Не угадал! У тебя осталось " + user.getNumberOfLives() + " жизней.\n" +
                     "Исключили: " + user.getWordFromExcludedLetters() + "\n\n" +
                     user.getGameViewOfTheWord();
