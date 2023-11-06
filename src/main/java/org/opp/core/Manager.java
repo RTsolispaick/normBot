@@ -36,14 +36,14 @@ public class Manager {
                 } else if (message.equals("/stop")) {
                     response = "Вы не находитесь в игре!\nЕсли хотите начать игру напишите /game";
                 } else {
-                    response = idleHandler.getAnswer(message);
+                    response = idleHandler.getAnswer(message, user);
                 }
                 yield response;
             }
             case GAME -> {
                 if (message.equals("/stop")) {
                     user.setStateIdle();
-                    response = idleHandler.getAnswer(message);
+                    response = idleHandler.getAnswer(message, user);
                 } else if (message.equals("/game")) {
                     response = "Игра и так идёт!\nЕсли хотите остановить игру напишите /stop";
                 } else {
