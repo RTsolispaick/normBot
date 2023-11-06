@@ -3,7 +3,7 @@ package org.opp.core;
 import org.opp.core.handler.GameHandler;
 import org.opp.core.handler.IdleHandler;
 import org.opp.data.StorageWord;
-import org.opp.essence.User;
+import org.opp.data.models.User;
 
     /**
      * Управление состоянием игры
@@ -49,6 +49,9 @@ public class Manager {
                 } else {
                     response = gameHandler.getAnswer(message, user);
                     if (user.getStatusGame() == 1) {
+                        user.setStateIdle();
+                    } else if (user.getStatusGame() == 2){
+                        user.setTotalWin(user.getTotalWin() + 1);
                         user.setStateIdle();
                     }
                 }

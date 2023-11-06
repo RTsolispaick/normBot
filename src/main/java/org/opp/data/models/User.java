@@ -1,43 +1,51 @@
-package org.opp.essence;
+package org.opp.data.models;
 
-import org.opp.core.State;
+import jakarta.persistence.*;
+import org.opp.data.models.types.State;
 
 /**
  * Класс пользователя
  */
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Long platform_id;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "chat_id")
+    private Long chat_id;
+    @Column(name = "state")
     private State state;
+    @Column(name = "word")
     private String word;
+    @Column(name = "category")
     private String category;
+    @Column(name = "game_view_of_the_word")
     private String gameViewOfTheWord;
+    @Column(name = "word_from_excluded_letters")
     private String wordFromExcludedLetters;
+    @Column(name = "numbers_of_lives")
     private Integer numberOfLives;
+    @Column(name = "status_game")
     private Integer statusGame;
+    @Column(name = "total_game")
     private Integer totalGame;
+    @Column(name = "total_win")
     private Integer totalWin;
-    private Integer raitingUser;
+    @Column(name = "rating")
+    private Integer ratingUser;
 
     /**
      * Конструкток пользователя
      */
-    public User() {
-        this.state = State.IDLE;
-        this.word = null;
-        this.category = null;
-        this.gameViewOfTheWord = null;
-        this.wordFromExcludedLetters = null;
-        this.numberOfLives = -1;
-        this.statusGame = -1;
-        this.totalWin = 0;
-        this.totalGame = 0;
-        this.raitingUser = 0;
-    }
+    public User() {}
 
-    public User(Long platform_id) {
+    public User(Long platform_id, String name) {
         this.state = State.IDLE;
-        this.platform_id = platform_id;
+        this.name = name;
+        this.chat_id = platform_id;
         this.word = null;
         this.category = null;
         this.gameViewOfTheWord = null;
@@ -46,7 +54,7 @@ public class User {
         this.statusGame = -1;
         this.totalWin = 0;
         this.totalGame = 0;
-        this.raitingUser = 0;
+        this.ratingUser = 0;
     }
 
     public void setStateIdle(){
@@ -56,7 +64,7 @@ public class User {
         this.wordFromExcludedLetters = null;
         this.numberOfLives = -1;
         this.statusGame = -1;
-        this.raitingUser = this.totalWin * 3 - this.totalGame;
+        this.ratingUser = this.totalWin * 3 - this.totalGame;
     }
 
     public void setStateGame(String word){
@@ -121,11 +129,11 @@ public class User {
 
     public void setTotalWin(Integer totalWin) {this.totalWin = totalWin;}
 
-    public Integer getRaitingUser() {
-        return raitingUser;
+    public Integer getRatingUser() {
+        return ratingUser;
     }
 
-    public void setRaitingUser(Integer raitingUser) {
-        this.raitingUser = raitingUser;
+    public void setRatingUser(Integer ratingUser) {
+        this.ratingUser = ratingUser;
     }
 }

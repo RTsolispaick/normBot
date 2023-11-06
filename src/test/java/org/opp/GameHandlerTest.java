@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opp.core.handler.GameHandler;
-import org.opp.essence.User;
+import org.opp.data.models.User;
 
 /**
  * Тесты класса GameHandler

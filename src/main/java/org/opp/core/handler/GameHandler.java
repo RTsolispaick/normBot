@@ -1,6 +1,6 @@
 package org.opp.core.handler;
 
-import org.opp.essence.User;
+import org.opp.data.models.User;
 
 import java.util.regex.Pattern;
 
