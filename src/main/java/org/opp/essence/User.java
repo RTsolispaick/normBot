@@ -6,18 +6,47 @@ import org.opp.core.State;
  * Класс пользователя
  */
 public class User {
+    private Integer id;
+    private Long platform_id;
     private State state;
     private String word;
-    private StringBuilder gameViewOfTheWord;
-    private StringBuilder wordFromExcludedLetters;
-    private int numberOfLives;
-    private int statusGame;
+    private String category;
+    private String gameViewOfTheWord;
+    private String wordFromExcludedLetters;
+    private Integer numberOfLives;
+    private Integer statusGame;
+    private Integer totalGame;
+    private Integer totalWin;
+    private Integer raitingUser;
 
     /**
      * Конструкток пользователя
      */
     public User() {
         this.state = State.IDLE;
+        this.word = null;
+        this.category = null;
+        this.gameViewOfTheWord = null;
+        this.wordFromExcludedLetters = null;
+        this.numberOfLives = -1;
+        this.statusGame = -1;
+        this.totalWin = 0;
+        this.totalGame = 0;
+        this.raitingUser = 0;
+    }
+
+    public User(Long platform_id) {
+        this.state = State.IDLE;
+        this.platform_id = platform_id;
+        this.word = null;
+        this.category = null;
+        this.gameViewOfTheWord = null;
+        this.wordFromExcludedLetters = null;
+        this.numberOfLives = -1;
+        this.statusGame = -1;
+        this.totalWin = 0;
+        this.totalGame = 0;
+        this.raitingUser = 0;
     }
 
     public void setStateIdle(){
@@ -25,17 +54,19 @@ public class User {
         this.word = null;
         this.gameViewOfTheWord = null;
         this.wordFromExcludedLetters = null;
-        this.numberOfLives = 0;
+        this.numberOfLives = -1;
         this.statusGame = -1;
+        this.raitingUser = this.totalWin * 3 - this.totalGame;
     }
 
     public void setStateGame(String word){
         this.state = State.GAME;
         this.word = word;
-        this.gameViewOfTheWord = new StringBuilder("_ ".repeat(word.length() - 1)).append("_");
-        this.wordFromExcludedLetters = new StringBuilder();
+        this.gameViewOfTheWord = "_ ".repeat(word.length() - 1) + "_";
+        this.wordFromExcludedLetters = "";
         this.numberOfLives = 10;
         this.statusGame = -1;
+        this.totalGame += 1;
     }
 
     public State getState(){
@@ -50,31 +81,51 @@ public class User {
         this.word = word;
     }
 
-    public StringBuilder getGameViewOfTheWord() {
+    public String getCategory() {return category;}
+
+    public void setCategory(String category) {this.category = category;}
+
+    public String getGameViewOfTheWord() {
         return gameViewOfTheWord;
     }
 
-    public void setGameViewOfTheWord(StringBuilder gameViewOfTheWord) {
+    public void setGameViewOfTheWord(String gameViewOfTheWord) {
         this.gameViewOfTheWord = gameViewOfTheWord;
     }
 
-    public StringBuilder getWordFromExcludedLetters() {
+    public String getWordFromExcludedLetters() {
         return wordFromExcludedLetters;
     }
 
-    public void setWordFromExcludedLetters(StringBuilder wordFromExcludedLetters) {
+    public void setWordFromExcludedLetters(String wordFromExcludedLetters) {
         this.wordFromExcludedLetters = wordFromExcludedLetters;
     }
 
-    public int getNumberOfLives() {
+    public Integer getNumberOfLives() {
         return numberOfLives;
     }
 
-    public void setNumberOfLives(int numberOfLives) {
+    public void setNumberOfLives(Integer numberOfLives) {
         this.numberOfLives = numberOfLives;
     }
 
-    public int getStatusGame() {return statusGame;}
+    public Integer getStatusGame() {return statusGame;}
 
-    public void setStatusGame(int statusGame) {this.statusGame = statusGame;}
+    public void setStatusGame(Integer statusGame) {this.statusGame = statusGame;}
+
+    public Integer getTotalGame() {return totalGame;}
+
+    public void setTotalGame(Integer totalGame) {this.statusGame = totalGame;}
+
+    public Integer getTotalWin() {return totalWin;}
+
+    public void setTotalWin(Integer totalWin) {this.totalWin = totalWin;}
+
+    public Integer getRaitingUser() {
+        return raitingUser;
+    }
+
+    public void setRaitingUser(Integer raitingUser) {
+        this.raitingUser = raitingUser;
+    }
 }
