@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.opp.core.Manager;
 import org.opp.core.handler.GameHandler;
 import org.opp.core.handler.IdleHandler;
-import org.opp.essence.User;
+import org.opp.data.models.User;
 
 /**
  * Тест класса Manager
@@ -23,11 +23,11 @@ public class ManagerTest {
     @Before
     public void setUp() {
         testGameHandler = new GameHandler();
-        testManager = new Manager();
-        testUser1 = new User();
-        testUser2 = new User();
-        testUser2.setStateGame("sdadsa");
         testIdleHandler = new IdleHandler();
+        testManager = new Manager();
+        testUser1 = new User(24323L, "dfsfs");
+        testUser2 = new User(43423L, "dfsfs");
+        testUser2.setStateGame("sdadsa");
     }
 
     /**
