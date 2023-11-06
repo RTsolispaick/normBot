@@ -45,11 +45,11 @@ public class ManagerTest {
         res = testManager.chooseState("/stop", testUser1);
         Assert.assertEquals( "Вы не находитесь в игре!\nЕсли хотите начать игру напишите /game", res);
         res = testManager.chooseState("Artyom", testUser1);
-        Assert.assertEquals(testIdleHandler.getAnswer("Artyom"), res);
+        Assert.assertEquals(testIdleHandler.getAnswer("Artyom", testUser1), res);
         res = testManager.chooseState("/game", testUser2);
         Assert.assertEquals("Игра и так идёт!\nЕсли хотите остановить игру напишите /stop", res);
         res = testManager.chooseState("/stop", testUser2);
-        Assert.assertEquals(testIdleHandler.getAnswer("/stop"), res);
+        Assert.assertEquals(testIdleHandler.getAnswer("/stop", testUser2), res);
         testUser2.setStateGame("sdasda");
         testManager.chooseState("Artyom", testUser2);
         res = testManager.chooseState("Artyom", testUser2);

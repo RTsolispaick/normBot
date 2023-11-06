@@ -15,7 +15,7 @@ public class GameHandlerTest {
     @Before
     public void setUp() {
         gameHandlerTest = new GameHandler();
-        user = new User();
+        user = new User(3123L, "dadad");
         user.setStateGame("костя");
     }
 
