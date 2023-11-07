@@ -7,8 +7,15 @@ import org.opp.data.utils.HibernateSessionFactoryUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Доступ к данным пользователя через таблицу данных
+ */
 public class UserDAO {
+    /**
+     * Поиск по id (в платформе) пользователя
+     * @param chat_id - id на платформе
+     * @return Объект user c данным id
+     */
     public User findByChatId(Long chat_id) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         User user = session.createQuery(
