@@ -5,6 +5,9 @@ import org.opp.data.models.User;
 
 import java.util.List;
 
+/**
+ * Репозиторий, который позволяет совершать операции над базой данных
+ */
 public class UserRepository {
     private final UserDAO userDAO;
 
