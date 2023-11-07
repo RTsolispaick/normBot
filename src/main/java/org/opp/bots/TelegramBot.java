@@ -2,8 +2,6 @@ package org.opp.bots;
 
 
 import org.opp.core.Manager;
-import org.opp.data.models.User;
-import org.opp.data.repositories.UserRepository;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,8 +17,6 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
     private final String token;
     private final String name;
     private final Manager telegramManager;
-    private final UserRepository userRepository;
-
 
     /**
      * Конструктор ТГ бота
@@ -31,7 +27,6 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
     public TelegramBot(String name, String token) {
         this.name = name;
         this.token = token;
-        this.userRepository = new UserRepository();
         this.telegramManager = new Manager();
     }
 
@@ -56,20 +51,9 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
         if (update.hasMessage()) {
             Message m = update.getMessage();
             if (m.hasText()) {
-                User user;
-                try{
-                    user = userRepository.findByChatID(m.getChatId());
-                    if (!user.getName().equals(m.getFrom().getFirstName()))
-                        user.setName(m.getFrom().getFirstName());
-                }
-                catch(Exception e){
-                    user = new User(m.getChatId(), m.getFrom().getFirstName());
-                    userRepository.save(user);
-                }
-
-                String response = telegramManager.chooseState(m.getText().toLowerCase(), user);
-                userRepository.update(user);
-
+                String response = telegramManager.chooseState(m.getText().toLowerCase(),
+                        m.getChatId(),
+                        m.getFrom().getFirstName());
                 sendMessage(m.getChatId(), response);
             }
         }
