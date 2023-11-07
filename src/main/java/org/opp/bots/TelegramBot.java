@@ -59,6 +59,8 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
                 User user;
                 try{
                     user = userRepository.findByChatID(m.getChatId());
+                    if (!user.getName().equals(m.getFrom().getFirstName()))
+                        user.setName(m.getFrom().getFirstName());
                 }
                 catch(Exception e){
                     user = new User(m.getChatId(), m.getFrom().getFirstName());
