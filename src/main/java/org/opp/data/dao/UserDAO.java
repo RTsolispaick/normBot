@@ -17,30 +17,26 @@ public class UserDAO {
      * @return Объект user c данным id
      */
     public User findByChatId(Long chat_id) {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        User user = session.createQuery(
+        User user = null;
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            user = session.createQuery(
                             "select u from User u where u.chat_id = :chat_id",
                             User.class)
                     .setParameter("chat_id", chat_id)
                     .getSingleResult();
-        session.close();
+        }
 
         return user;
     }
+
     public List<User> findTop5() {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         List<User> users = new ArrayList<>();
-        try {
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             users = session.createQuery(
                             "from User u order by u.ratingUser desc",
                             User.class)
                     .setMaxResults(5)
                     .list();
-        } catch (Exception e) {
-            System.out.println("Zero length users!" + e);
-            e.printStackTrace();
-        } finally {
-            session.close();
         }
         return users;
     }
