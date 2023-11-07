@@ -32,7 +32,7 @@ public class UserDAO {
         List<User> users = new ArrayList<>();
         try {
             users = session.createQuery(
-                            "from User u order by u.totalWin desc",
+                            "from User u order by u.ratingUser desc",
                             User.class)
                     .setMaxResults(5)
                     .list();

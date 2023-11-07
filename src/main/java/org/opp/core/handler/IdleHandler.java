@@ -4,7 +4,6 @@ import org.opp.data.models.User;
 import org.opp.data.repositories.UserRepository;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Этот класс отвечает за обработку информации получаемой от юзера
@@ -23,8 +22,12 @@ public class IdleHandler {
     public String getAnswer(String message, User user) {
         switch (message) {
             case "/start": return "Привет! Давай сыграем в виселицу!\n" +
-                    "Если ты согласен напиши /game. Если ты не знаком с правилами напиши /rules.";
-            case "/rules": return "Бот загадывает слово — пишет две крайние буквы и отмечает места для остальных букв. " +
+                    "Если ты не знаком с правилами напиши /rules.\n\n" +
+                    "Доступные команды:\n" +
+                    "/game - начать игру\n" +
+                    "/stats - твоя статистика\n" +
+                    "/top - топ игроков\n";
+            case "/rules": return "Бот загадывает слово. " +
                     "Cлово должно быть именем существительным, нарицательным в именительном падеже единственного числа, " +
                     "либо множественного числа при отсутствии у слова формы единственного числа." + "\n\n" +
                     "Игрок предлагает букву, которая может входить в это слово. " +
@@ -42,9 +45,10 @@ public class IdleHandler {
                 StringBuilder response = new StringBuilder("Top: \n");
 
                 for (int i = 0; i < listUser.size(); i++) {
-                    response.append((i + 1) + ". " + listUser.get(i).getName() + " = " + listUser.get(i).getRatingUser() + "\n");
+                    response.append((i + 1)).append(". ").append(listUser.get(i).getName())
+                            .append(" = ").append(listUser.get(i).getRatingUser()).append("\n");
                 }
-                response.append("\nТвой рейтинг: " + user.getRatingUser());
+                response.append("\nТвой рейтинг: ").append(user.getRatingUser());
 
                 return response.toString();
             default: return "Я тебя не понял. Попробуй написать ещё раз!";
