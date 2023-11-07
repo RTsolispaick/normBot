@@ -1,10 +1,15 @@
 package org.opp.utils;
 
 public class Config {
-    public static String getName() {
-        return "BOT_USERNAME";
+    public String getName() {
+        return "";
     }
-    public static String getToken() {
-        return "BOT_TOKEN";
+    public String getToken() {
+        return "";
     }
+    public String getDBhost(){return "";}
+    public String getDBport(){return "";}
+    public String getDBname(){return "";}
+    public String getDBuser(){return "";}
+    public String getDBpass(){return "";}
 }

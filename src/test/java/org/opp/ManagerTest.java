@@ -1,12 +1,12 @@
 package org.opp;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.opp.core.Manager;
 import org.opp.core.handler.GameHandler;
 import org.opp.core.handler.IdleHandler;
-import org.opp.essence.User;
+import org.opp.data.models.User;
 
 /**
  * Тест класса Manager
@@ -20,14 +20,14 @@ public class ManagerTest {
     /**
      *  Инициализируем объект тестируемого класса
      */
-    @BeforeEach
+    @Before
     public void setUp() {
         testGameHandler = new GameHandler();
-        testManager = new Manager();
-        testUser1 = new User();
-        testUser2 = new User();
-        testUser2.setStateGame();
         testIdleHandler = new IdleHandler();
+        testManager = new Manager();
+        testUser1 = new User(24323L, "dfsfs");
+        testUser2 = new User(43423L, "dfsfs");
+        testUser2.setStateGame("sdadsa");
     }
 
     /**
@@ -39,18 +39,20 @@ public class ManagerTest {
     @Test
     public void managerChoose_Test() {
         String res = testManager.chooseState("/game", testUser1);
-        Assertions.assertEquals(testGameHandler.startGame(testUser1.getWord(), testUser1), res);
+        testUser1.setStateGame(testUser1.getWord());
+        Assert.assertEquals(testGameHandler.getAnswer(testUser1.getWord(), testUser1), res);
         testUser1.setStateIdle();
         res = testManager.chooseState("/stop", testUser1);
-        Assertions.assertEquals( "Вы не находитесь в игре!\nЕсли хотите начать игру напишите /game", res);
+        Assert.assertEquals( "Вы не находитесь в игре!\nЕсли хотите начать игру напишите /game", res);
         res = testManager.chooseState("Artyom", testUser1);
-        Assertions.assertEquals(testIdleHandler.getAnswer("Artyom"), res);
+        Assert.assertEquals(testIdleHandler.getAnswer("Artyom", testUser1), res);
         res = testManager.chooseState("/game", testUser2);
-        Assertions.assertEquals("Игра и так идёт!\nЕсли хотите остановить игру напишите /stop", res);
+        Assert.assertEquals("Игра и так идёт!\nЕсли хотите остановить игру напишите /stop", res);
         res = testManager.chooseState("/stop", testUser2);
-        Assertions.assertEquals(testIdleHandler.getAnswer("/stop"), res);
-        testUser2.setStateGame();
+        Assert.assertEquals(testIdleHandler.getAnswer("/stop", testUser2), res);
+        testUser2.setStateGame("sdasda");
+        testManager.chooseState("Artyom", testUser2);
         res = testManager.chooseState("Artyom", testUser2);
-        Assertions.assertEquals(testGameHandler.getAnswer("Artyom", testUser2), res);
+        Assert.assertEquals(testGameHandler.getAnswer("Artyom", testUser2), res);
     }
 }

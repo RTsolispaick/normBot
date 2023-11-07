@@ -3,16 +3,16 @@ package org.opp.core;
 import org.opp.core.handler.GameHandler;
 import org.opp.core.handler.IdleHandler;
 import org.opp.data.StorageWord;
-import org.opp.essence.User;
+import org.opp.data.models.User;
 
     /**
-       * Управление состоянием игры
-       */
+     * Управление состоянием игры
+     */
 
 public class Manager {
-    private  IdleHandler idleHandler;
-    private GameHandler gameHandler;
-    private StorageWord storageWord;
+    private final IdleHandler idleHandler;
+    private final GameHandler gameHandler;
+    private final StorageWord storageWord;
 
     public Manager() {
         gameHandler = new GameHandler();
@@ -28,32 +28,35 @@ public class Manager {
      */
     public String chooseState(String message, User user) {
         String response;
-        switch (user.getState()) {
-            case IDLE:
+        return switch (user.getState()) {
+            case IDLE -> {
                 if (message.equals("/game")) {
-                    user.setStateGame();
-                    response = gameHandler.startGame(storageWord.wordChoice(), user);
+                    user.setStateGame(storageWord.wordChoice());
+                    response = gameHandler.getAnswer(message, user);
                 } else if (message.equals("/stop")) {
                     response = "Вы не находитесь в игре!\nЕсли хотите начать игру напишите /game";
                 } else {
-                    response = idleHandler.getAnswer(message);
+                    response = idleHandler.getAnswer(message, user);
                 }
-                return response;
-            case GAME:
+                yield response;
+            }
+            case GAME -> {
                 if (message.equals("/stop")) {
                     user.setStateIdle();
-                    response = idleHandler.getAnswer(message);
+                    response = idleHandler.getAnswer(message, user);
                 } else if (message.equals("/game")) {
                     response = "Игра и так идёт!\nЕсли хотите остановить игру напишите /stop";
                 } else {
                     response = gameHandler.getAnswer(message, user);
-                    if (response.contains("/game")) {
+                    if (user.getStatusGame() == 1) {
+                        user.setStateIdle();
+                    } else if (user.getStatusGame() == 2){
+                        user.setTotalWin(user.getTotalWin() + 1);
                         user.setStateIdle();
                     }
                 }
-                return response;
-            default:
-                throw new RuntimeException("incorrect choose state");
-        }
+                yield response;
+            }
+        };
     }
 }
