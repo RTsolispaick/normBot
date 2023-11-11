@@ -1,30 +1,36 @@
 package org.opp.core.handler;
 
 import org.opp.data.models.User;
+import org.opp.data.models.types.StatusGame;
 import org.opp.data.repositories.UserRepository;
 
 import java.util.List;
 
 /**
- * Этот класс отвечает за обработку информации получаемой от юзера
+ * Отвечает за определение ответа пользователю, несвязанного с игровым процессом.
  */
 public class IdleHandler {
     private final UserRepository userRepository;
-    public IdleHandler() {this.userRepository = new UserRepository();}
+
+    public IdleHandler() {
+        this.userRepository = new UserRepository();
+    }
 
     /**
-     * Конструктор класса для тестирования функциональности класса
-     * @param repository замоканный репозиторий для корректного теста функциональности класса
+     * Конструктор, используемый для назначения UserRepository с необходимыми свойствами.
+     * @param userRepository замоканный объект класса UserRepository
      */
-    public IdleHandler(UserRepository repository) {this.userRepository = repository;}
+    public IdleHandler(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
-     * Обрабатывает сообщения юзера, содержащие текстовое сообщение, и формирует ответ на него
-     *
-     * @param message содержит текст сообщения
-     * @return возращает ответ на сообщение
+     * Реализует внеигровую логику. Определяет ответ пользователю на его сообщение.
+     * @param message сообщение пользователя
+     * @param user объект содержащий данные пользователя и игру, принадлежащую данному пользователю
+     * @return ответ на сообщение пользователя
      */
-    public String getAnswer(String message, User user) {
+    public String getResponse(String message, User user) {
         switch (message) {
             case "/start" -> {
                 return """
@@ -47,13 +53,34 @@ public class IdleHandler {
                         Теперь, когда ты узнал правила, можещь написать /game для начала игры.""";
             }
             case "/stop" -> {
+                if (!user.getStatusGame().equals(StatusGame.STARTGAME)) {
+                    switch (user.getDifficultGame()) {
+                        case EASY -> user.setTotalGameEasy(user.getTotalGameEasy() + 1);
+                        case MEDIUM -> user.setTotalGameMedium(user.getTotalGameMedium() + 1);
+                        case HARD -> user.setTotalGameHard(user.getTotalGameHard() + 1);
+                    }
+                }
+
+                user.setStateIdle();
+
                 return """
                         Игра остановлена!
                         Напиши /game, если хочешь сыграть ещё раз""";
             }
             case "/stats" -> {
-                return "Количество побед: " + user.getTotalWin() + "\n" +
-                        "Количество игр: " + user.getTotalGame();
+                return "Количество отгаданных слов:\n" +
+                        "Easy = " + user.getTotalWinEasy() + "\n" +
+                        "Medium = " + user.getTotalWinMedium() + "\n" +
+                        "Hard = " + user.getTotalWinHard() + "\n\n" +
+                        "Количество неотгаданных слов:\n" +
+                        "Easy = " + (user.getTotalGameEasy() - user.getTotalWinEasy()) + "\n" +
+                        "Medium = " + (user.getTotalGameMedium() - user.getTotalWinMedium()) + "\n" +
+                        "Hard = " + (user.getTotalGameHard() - user.getTotalWinHard()) + "\n\n" +
+                        "Количество игр:\n" +
+                        "Easy = " + user.getTotalGameEasy() + "\n" +
+                        "Medium = " + user.getTotalGameMedium() + "\n" +
+                        "Hard = " + user.getTotalGameHard() + "\n\n" +
+                        "Всего игр: " + (user.getTotalGameHard() + user.getTotalGameMedium() + user.getTotalGameEasy());
             }
             case "/top" -> {
                 List<User> listUser = userRepository.findTop5();
