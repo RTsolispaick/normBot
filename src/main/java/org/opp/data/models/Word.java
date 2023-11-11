@@ -2,6 +2,9 @@ package org.opp.data.models;
 
 import jakarta.persistence.*;
 
+/**
+ * Класс слов
+ */
 @Entity
 @Table(name = "words")
 public class Word {

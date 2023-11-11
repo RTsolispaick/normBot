@@ -27,6 +27,13 @@ public class UserRepository {
     public List<User> findTop5() {
         return userDAO.findTop5();
     }
+
+    /**
+     * Логирование пользователя
+     * @param chat_id - id на платформе
+     * @param name имя пользователя
+     * @return пользователя
+     */
     public User login(Long chat_id, String name){
         User user = userDAO.findByChatId(chat_id);
         if (user == null){

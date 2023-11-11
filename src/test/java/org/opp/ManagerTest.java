@@ -29,7 +29,7 @@ public class ManagerTest {
         testIdleHandler = new IdleHandler();
         testUser1 = new User(24323L, "dfsfs");
         testUser2 = new User(43423L, "dfsfs");
-        testUser2.setStateGame(new Word("теннис", "Спорт"));
+        testUser2.setStateGame(new Word("теннис", "спорт"));
     }
 
     /**

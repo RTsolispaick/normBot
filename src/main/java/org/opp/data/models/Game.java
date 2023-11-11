@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import org.opp.data.models.types.Difficult;
 import org.opp.data.models.types.StatusGame;
 
+/**
+ * Класс игры
+ */
 @Entity
 @Table(name = "games")
 public class Game {
@@ -29,6 +32,10 @@ public class Game {
 
     public Game() {}
 
+    /**
+     * Инициализация игры
+     * @param word слово для игры в висилицу
+     */
     public void initGame(Word word){
         this.word = word.getWord();
         this.category = word.getCategory();

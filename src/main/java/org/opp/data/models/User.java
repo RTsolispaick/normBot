@@ -31,30 +31,45 @@ public class User {
     private Game userGame;
 
     /**
-     * Конструкток пользователя
+     * Пустой конструкток пользователя
      */
-    public User() {
-    }
+    public User() {}
 
-
-    public User(Long platform_id, String name) {
+    /**
+     * Конструк пользователя
+     * @param chat_id идентификатор юзера на платформе
+     * @param name Имя пользователя
+     */
+    public User(Long chat_id, String name) {
         this.state = State.IDLE;
         this.name = name;
-        this.chat_id = platform_id;
+        this.chat_id = chat_id;
         this.totalWin = 0;
         this.totalGame = 0;
         this.ratingUser = 0;
         this.userGame = new Game();
     }
+
+    /**
+     * геттер для получения текущего состояния игры
+     * @return состояние игры пользователя
+     */
     public StatusGame getStatusGame(){
         return this.userGame.getStatusGame();
     }
 
+    /**
+     * сеттер для того, чтобы задать состояние покоя и пересчитать рейтинг пользователя
+     */
     public void setStateIdle() {
         this.state = State.IDLE;
         this.ratingUser = this.totalWin * 3 - this.totalGame;
     }
 
+    /**
+     * Сеттер, чтобы задать состояние игры и инициализировать игру по слову
+     * @param word слово для игры
+     */
     public void setStateGame(Word word) {
         this.state = State.GAME;
         this.userGame.initGame(word);

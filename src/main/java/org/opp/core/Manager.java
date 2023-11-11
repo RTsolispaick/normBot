@@ -5,8 +5,8 @@ import org.opp.core.handler.IdleHandler;
 import org.opp.data.models.User;
 
 /**
-     * Управление состоянием игры
-     */
+ * Управление состоянием игры
+ */
 
 public class Manager {
     private final IdleHandler idleHandler;
@@ -17,7 +17,10 @@ public class Manager {
         this.gameHandler = new GameHandler();
         this.idleHandler = new IdleHandler();
     }
-
+    /**
+     * Конструктор класса для тестирования функциональности класса
+     * @param gameHandler замоканное состояние игры для корректного теста функциональности класса
+     */
     public Manager(GameHandler gameHandler) {
         this.gameHandler = gameHandler;
         this.idleHandler = new IdleHandler();
@@ -26,10 +29,11 @@ public class Manager {
     /**
      * Обработка сообщений в зависимости от состояния пользователя
      * @param message сообщение
+     * @param user пользователь
      * @return Ответ на сообщение
      */
     public String chooseState(String message, User user) {
-    return switch (user.getState()) {
+        return switch (user.getState()) {
             case IDLE -> {
                 if (message.equals("/game")) {
                     yield gameHandler.getAnswer(message, user);
@@ -41,11 +45,11 @@ public class Manager {
             }
             case GAME -> {
                 if (message.equals("/stop")) {
-                    yield  idleHandler.getAnswer(message, user);
+                    yield idleHandler.getAnswer(message, user);
                 } else if (message.equals("/game")) {
-                    yield  "Игра и так идёт!\nЕсли хотите остановить игру напишите /stop";
+                    yield "Игра и так идёт!\nЕсли хотите остановить игру напишите /stop";
                 } else {
-                    yield  gameHandler.getAnswer(message, user);
+                    yield gameHandler.getAnswer(message, user);
 
                 }
             }
