@@ -20,10 +20,18 @@ public class User {
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
     private State state;
-    @Column(name = "total_game")
-    private Integer totalGame;
-    @Column(name = "total_win")
-    private Integer totalWin;
+    @Column(name = "total_game_easy")
+    private Integer totalGameEasy;
+    @Column(name = "total_game_medium")
+    private Integer totalGameMedium;
+    @Column(name = "total_game_hard")
+    private Integer totalGameHard;
+    @Column(name = "total_win_easy")
+    private Integer totalWinEasy;
+    @Column(name = "total_win_medium")
+    private Integer totalWinMedium;
+    @Column(name = "total_win_hard")
+    private Integer totalWinHard;
     @Column(name = "rating")
     private Integer ratingUser;
     @OneToOne(cascade = CascadeType.ALL)

@@ -36,6 +36,11 @@ public class UserDAO {
         return user;
     }
 
+    /**
+     * Находит топ-5 лучших пользователей по рейтингу
+     * @return список топ-5 пользователей
+     */
+
     public List<User> findTop5() {
         List<User> users = new ArrayList<>();
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
