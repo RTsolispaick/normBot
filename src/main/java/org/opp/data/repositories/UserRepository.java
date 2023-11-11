@@ -27,5 +27,17 @@ public class UserRepository {
     public List<User> findTop5() {
         return userDAO.findTop5();
     }
+    public User login(Long chat_id, String name){
+        User user = userDAO.findByChatId(chat_id);
+        if (user == null){
+            user = new User(chat_id, name);
+            userDAO.save(user);
+        }
+        if(!user.getName().equals(name)){
+            user.setName(name);
+            userDAO.update(user);
+        }
+        return user;
+    }
 
 }

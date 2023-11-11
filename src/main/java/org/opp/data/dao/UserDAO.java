@@ -24,6 +24,8 @@ public class UserDAO {
                             User.class)
                     .setParameter("chat_id", chat_id)
                     .getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return user;
@@ -43,6 +45,8 @@ public class UserDAO {
     public void save(User user) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction tx1 = session.beginTransaction();
+
+        System.out.println("dada");
         try {
             session.save(user);
             tx1.commit();
