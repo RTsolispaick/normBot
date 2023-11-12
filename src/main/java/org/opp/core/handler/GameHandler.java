@@ -13,18 +13,10 @@ import java.util.regex.Pattern;
  * Класс, отвечающий за процесс игры
  */
 public class GameHandler {
-    private WordRepository wordRepository;
+    private final WordRepository wordRepository;
 
     public GameHandler() {
         this.wordRepository = new WordRepository();
-    }
-
-    /**
-     * Сеттер, используемый для назначения WordRepository с необходимыми свойствами.
-     * @param wordRepository замоканный объект класса WordRepository
-     */
-    public void setWordRepository(WordRepository wordRepository) {
-        this.wordRepository = wordRepository;
     }
 
     /**
@@ -68,7 +60,6 @@ public class GameHandler {
 
         return response;
     }
-
 
     /**
      * Реализует логику игры. Определяет ответ пользователю на его сообщение в зависимости от состояния игры.

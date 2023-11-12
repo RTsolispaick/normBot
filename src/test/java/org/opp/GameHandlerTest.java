@@ -13,6 +13,7 @@ import org.opp.data.models.Word;
 public class GameHandlerTest {
     private GameHandler gameHandlerTest;
     private User user;
+
     @Before
     public void setUp() {
         gameHandlerTest = new GameHandler();
@@ -101,6 +102,7 @@ public class GameHandlerTest {
                 т _ _ _ _ _""", gameHandlerTest.updateStateUser("у", user));
         Assert.assertEquals("Ты проиграл! Загаданое слово: теннис!\n" +
                 "Если хочешь сыграть ещё раз напиши /game", gameHandlerTest.updateStateUser("д", user));
+
         Assert.assertEquals(totalGameBefore, user.getTotalGameHard());
         Assert.assertEquals(totalWinGameBefore, user.getTotalWinHard());
     }

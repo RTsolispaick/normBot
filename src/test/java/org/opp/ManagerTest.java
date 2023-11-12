@@ -9,13 +9,11 @@ import org.opp.core.handler.GameHandler;
 import org.opp.core.handler.IdleHandler;
 import org.opp.data.models.User;
 import org.opp.data.models.Word;
-import org.opp.data.repositories.WordRepository;
 
 /**
  * Тест класса Manager
  */
 public class ManagerTest {
-    private Manager testManager;
     private User testUser1, testUser2;
     private IdleHandler testIdleHandler;
 
@@ -38,18 +36,13 @@ public class ManagerTest {
      */
     @Test
     public void managerChoose_Test() {
-        WordRepository wordRepository = Mockito.mock(WordRepository.class);
         GameHandler testGameHandler = Mockito.mock(GameHandler.class);
-
-        Mockito.when(wordRepository.getRandomWord()).thenReturn(new Word("теннис", "спорт"));
-
-        testGameHandler.setWordRepository(wordRepository);
 
         Mockito.when(testGameHandler.updateStateUser("/game", testUser1)).thenReturn("uu");
         Mockito.when(testGameHandler.updateStateUser("/game", testUser2)).thenReturn("uu");
         Mockito.when(testGameHandler.updateStateUser("Artyom", testUser2)).thenReturn("uu");
 
-        testManager = new Manager(testGameHandler);
+        Manager testManager = new Manager(testGameHandler);
 
         String res = testManager.chooseState("/game", testUser1);
         Assert.assertEquals(testGameHandler.updateStateUser("/game", testUser1), res);
