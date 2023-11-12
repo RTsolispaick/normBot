@@ -36,21 +36,20 @@ public class Manager {
         return switch (user.getState()) {
             case IDLE -> {
                 if (message.equals("/game")) {
-                    yield gameHandler.getAnswer(message, user);
+                    yield gameHandler.updateStateUser(message, user);
                 } else if (message.equals("/stop")) {
                     yield "Вы не находитесь в игре!\nЕсли хотите начать игру напишите /game";
                 } else {
-                    yield idleHandler.getAnswer(message, user);
+                    yield idleHandler.getResponse(message, user);
                 }
             }
             case GAME -> {
                 if (message.equals("/stop")) {
-                    yield idleHandler.getAnswer(message, user);
+                    yield idleHandler.getResponse(message, user);
                 } else if (message.equals("/game")) {
                     yield "Игра и так идёт!\nЕсли хотите остановить игру напишите /stop";
                 } else {
-                    yield gameHandler.getAnswer(message, user);
-
+                    yield gameHandler.updateStateUser(message, user);
                 }
             }
         };
