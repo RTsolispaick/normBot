@@ -1,7 +1,6 @@
 package org.opp;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.opp.core.Manager;
@@ -10,23 +9,18 @@ import org.opp.core.handler.IdleHandler;
 import org.opp.data.models.User;
 import org.opp.data.models.Word;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 /**
  * Тест класса Manager
  */
 public class ManagerTest {
-    private User testUser1, testUser2;
-    private IdleHandler testIdleHandler;
+    private final GameHandler testGameHandler = Mockito.mock(GameHandler.class);
+    private final IdleHandler testIdleHandler = Mockito.mock(IdleHandler.class);
+    private final Manager testManager = new Manager(testGameHandler, testIdleHandler);
+    private final User user = new User(24323L, "dfsfs");
 
-    /**
-     *  Инициализируем объект тестируемого класса
-     */
-    @Before
-    public void setUp() {
-        testIdleHandler = new IdleHandler();
-        testUser1 = new User(24323L, "dfsfs");
-        testUser2 = new User(43423L, "dfsfs");
-        testUser2.setStateGame(new Word("теннис", "спорт"));
-    }
 
     /**
      * Тест для метода chooseState:
@@ -36,27 +30,25 @@ public class ManagerTest {
      */
     @Test
     public void managerChoose_Test() {
-        GameHandler testGameHandler = Mockito.mock(GameHandler.class);
+        testManager.chooseState("/game", user);
+        verify(testGameHandler, times(1)).updateStateUser(anyString(), any(User.class));
 
-        Mockito.when(testGameHandler.updateStateUser("/game", testUser1)).thenReturn("uu");
-        Mockito.when(testGameHandler.updateStateUser("/game", testUser2)).thenReturn("uu");
-        Mockito.when(testGameHandler.updateStateUser("Artyom", testUser2)).thenReturn("uu");
+        user.setStateIdle();
+        Assert.assertEquals( "Вы не находитесь в игре!\nЕсли хотите начать игру напишите /game"
+                , testManager.chooseState("/stop", user));
 
-        Manager testManager = new Manager(testGameHandler);
+        testManager.chooseState("Artyom", user);
+        verify(testIdleHandler, times(1)).getResponse("Artyom", user);
 
-        String res = testManager.chooseState("/game", testUser1);
-        Assert.assertEquals(testGameHandler.updateStateUser("/game", testUser1), res);
-        testUser1.setStateIdle();
-        res = testManager.chooseState("/stop", testUser1);
-        Assert.assertEquals( "Вы не находитесь в игре!\nЕсли хотите начать игру напишите /game", res);
-        res = testManager.chooseState("Artyom", testUser1);
-        Assert.assertEquals(testIdleHandler.getResponse("Artyom", testUser1), res);
-        res = testManager.chooseState("/stop", testUser2);
-        Assert.assertEquals(testIdleHandler.getResponse("/stop", testUser2), res);
-        testUser2.setStateGame(new Word("теннис", "спорт"));
-        res = testManager.chooseState("/game", testUser2);
-        Assert.assertEquals("Игра и так идёт!\nЕсли хотите остановить игру напишите /stop", res);
-        res = testManager.chooseState("Artyom", testUser2);
-        Assert.assertEquals(testGameHandler.updateStateUser("Artyom", testUser2), res);
+        user.setStateGame(new Word("теннис", "спорт"));
+        testManager.chooseState("/stop", user);
+        verify(testIdleHandler, times(1)).getResponse("/stop", user);
+
+        user.setStateGame(new Word("теннис", "спорт"));
+        Assert.assertEquals("Игра и так идёт!\nЕсли хотите остановить игру напишите /stop"
+                , testManager.chooseState("/game", user));
+
+        testManager.chooseState("Artyom", user);
+        verify(testGameHandler,times(1)).updateStateUser("Artyom", user);
     }
 }

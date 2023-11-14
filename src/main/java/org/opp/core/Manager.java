@@ -20,11 +20,13 @@ public class Manager {
     /**
      * Конструктор класса для тестирования функциональности класса
      * @param gameHandler замоканное состояние игры для корректного теста функциональности класса
+     * @param idleHandler замоканный состояние покоя для корректного теста функциональности класса
      */
-    public Manager(GameHandler gameHandler) {
+    public Manager(GameHandler gameHandler, IdleHandler idleHandler) {
         this.gameHandler = gameHandler;
-        this.idleHandler = new IdleHandler();
+        this.idleHandler = idleHandler;
     }
+
 
     /**
      * Обработка сообщений в зависимости от состояния пользователя
