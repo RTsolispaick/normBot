@@ -28,4 +28,23 @@ public class UserRepository {
         return userDAO.findTop5();
     }
 
+    /**
+     * Логирование пользователя
+     * @param chat_id - id на платформе
+     * @param name имя пользователя
+     * @return пользователя
+     */
+    public User login(Long chat_id, String name){
+        User user = userDAO.findByChatId(chat_id);
+        if (user == null){
+            user = new User(chat_id, name);
+            userDAO.save(user);
+        }
+        if(!user.getName().equals(name)){
+            user.setName(name);
+            userDAO.update(user);
+        }
+        return user;
+    }
+
 }
