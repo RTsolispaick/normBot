@@ -1,7 +1,6 @@
 package org.opp;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.opp.core.handler.IdleHandler;
@@ -18,15 +17,9 @@ import java.util.List;
  * Тест класса IdleHandlerTest
  */
 public class IdleHandlerTest {
-    private IdleHandler testIdleHandler;
-    private UserRepository userRepository;
-    private User user;
-
-    @Before
-    public void setUp() {
-        testIdleHandler = new IdleHandler();
-        user = new User(0L, "name");
-    }
+    private final UserRepository userRepository = Mockito.mock(UserRepository.class);
+    private final IdleHandler testIdleHandler = new IdleHandler(userRepository);
+    private final User user = new User(0L, "name");
 
     /**
      * Тест команды /stop
@@ -95,7 +88,6 @@ public class IdleHandlerTest {
      */
     @Test
     public void top_Test() {
-        userRepository = Mockito.mock(UserRepository.class);
         List<User> userList = new ArrayList<>();
 
         User user1 = new User(0L, "vova");
@@ -110,7 +102,6 @@ public class IdleHandlerTest {
         userList.add(user5);
 
         Mockito.when(userRepository.findTop5()).thenReturn(userList);
-        testIdleHandler = new IdleHandler(userRepository);
 
         Assert.assertEquals("""
                 Top:

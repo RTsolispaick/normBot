@@ -20,6 +20,14 @@ public class GameHandler {
     }
 
     /**
+     * Конструктор класса для тестирования
+     * @param wordRepository замоканный WordRepository
+     */
+    public GameHandler(WordRepository wordRepository) {
+        this.wordRepository = wordRepository;
+    }
+
+    /**
      * Изменяет состояние User в зависимости от событий в игре.
      * @param message сообщение пользователя
      * @param user объект содержащий данные пользователя и игру, принадлежащую данному пользователю
