@@ -3,53 +3,31 @@ package org.opp.core.handler;
 import org.opp.data.models.Game;
 import org.opp.data.models.User;
 import org.opp.data.models.types.Difficult;
-import org.opp.data.models.types.State;
 import org.opp.data.models.types.StatusGame;
-import org.opp.data.repositories.WordRepository;
 
 import java.util.regex.Pattern;
 
 /**
- * Класс, отвечающий за процесс игры
+ * Отвечает за процесс игры
  */
 public class GameHandler {
-    private final WordRepository wordRepository;
-
-    public GameHandler() {
-        this.wordRepository = new WordRepository();
-    }
-
     /**
-     * Конструктор класса для тестирования
-     * @param wordRepository замоканный WordRepository
-     */
-    public GameHandler(WordRepository wordRepository) {
-        this.wordRepository = wordRepository;
-    }
-
-    /**
-     * Изменяет состояние User в зависимости от событий в игре.
+     * Контролиует данные User, связанные со статистикой в зависимости от событий в игре.
      * @param message сообщение пользователя
-     * @param user объект содержащий данные пользователя и игру, принадлежащую данному пользователю
      * @return ответ на сообщение пользователя
      */
-    public String updateStateUser(String message, User user) {
-        if (user.getState().equals(State.IDLE)) {
-            user.setStateGame(wordRepository.getRandomWord());
-        }
+    public String updateStatsUser(String message, User user, Game game) {
+        String response = getResponse(message, game);
 
-        String response = getResponse(message, user.getUserGame());
-
-        if(user.getStatusGame().equals(StatusGame.LOSEGAME)) {
-            switch (user.getDifficultGame()) {
+        if(game.getStatusGame().equals(StatusGame.LOSEGAME)) {
+            switch (game.getDifficult()) {
                 case EASY -> user.setTotalGameEasy(user.getTotalGameEasy() + 1);
                 case MEDIUM -> user.setTotalGameMedium(user.getTotalGameMedium() + 1);
                 case HARD -> user.setTotalGameHard(user.getTotalGameHard() + 1);
             }
-            user.setStateIdle();
         }
-        else if (user.getStatusGame().equals(StatusGame.WINGAME)) {
-            switch (user.getDifficultGame()) {
+        else if (game.getStatusGame().equals(StatusGame.WINGAME)) {
+            switch (game.getDifficult()) {
                 case EASY ->  {
                     user.setTotalGameEasy(user.getTotalGameEasy() + 1);
                     user.setTotalWinEasy(user.getTotalWinEasy() + 1);
@@ -63,7 +41,6 @@ public class GameHandler {
                     user.setTotalWinHard(user.getTotalWinHard() + 1);
                 }
             }
-            user.setStateIdle();
         }
 
         return response;
@@ -72,10 +49,10 @@ public class GameHandler {
     /**
      * Реализует логику игры. Определяет ответ пользователю на его сообщение в зависимости от состояния игры.
      * @param message сообщение пользователя
-     * @param game содержит данные о игре пользователя
+     * @param game содержит данные о игре
      * @return ответ на сообщение пользователя
      */
-    public String getResponse(String message, Game game) {
+    protected String getResponse(String message, Game game) {
         if (game.getStatusGame().equals(StatusGame.STARTGAME)) {
             switch (message) {
                 case "/game" -> {
@@ -113,7 +90,7 @@ public class GameHandler {
         if (message.length() > 1) {
             return "Тебе нужно вывести одну букву на русском языке!";
         }
-        if (!Pattern.compile("[а-я]").matcher(message).matches() && message.charAt(0) != 'ё') {
+        if (!Pattern.compile("[а-яё]+").matcher(message).matches()) {
             return "В слове есть только буквы русского алфавита!";
         }
         if (game.getGameViewOfTheWord().contains(message) ||
@@ -134,8 +111,7 @@ public class GameHandler {
 
             if (!game.getGameViewOfTheWord().contains("_")) {
                 game.setStatusGame(StatusGame.WINGAME);
-                return "Молодец! Ты отгадал слово: " + game.getWord() + "!\n" +
-                        "Если хочешь сыграть ещё раз напиши /game";
+                return "Молодец! Ты отгадал слово: " + game.getWord() + "!";
             }
             return "Правильно!. Осталось попыток: " + game.getNumberOfLives() + "\n" +
                     "Исключили: " + game.getWordFromExcludedLetters() + "\n\n" +
@@ -148,8 +124,7 @@ public class GameHandler {
 
             if (game.getNumberOfLives() <= 0) {
                 game.setStatusGame(StatusGame.LOSEGAME);
-                return "Ты проиграл! Загаданое слово: " + game.getWord() + "!\n" +
-                        "Если хочешь сыграть ещё раз напиши /game";
+                return "Ты проиграл! Загаданое слово: " + game.getWord() + "!";
             }
             return "Не угадал! Осталось попыток: " + game.getNumberOfLives() + "\n" +
                     "Исключили: " + game.getWordFromExcludedLetters() + "\n\n" +
