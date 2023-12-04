@@ -52,7 +52,7 @@ public class GameHandler {
      * @param game содержит данные о игре
      * @return ответ на сообщение пользователя
      */
-    protected String getResponse(String message, Game game) {
+    private String getResponse(String message, Game game) {
         if (game.getStatusGame().equals(StatusGame.STARTGAME)) {
             switch (message) {
                 case "/game" -> {
