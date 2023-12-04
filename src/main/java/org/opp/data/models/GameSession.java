@@ -45,6 +45,10 @@ public class GameSession {
         this.game = new Game();
     }
 
+    public TypeGame getTypeGame() {
+        return this.typeGame;
+    }
+
     public List<User> getLinkedUsers() {
         return this.linkedUsers;
     }
@@ -66,5 +70,40 @@ public class GameSession {
      */
     public void addUser(User user) {
         this.linkedUsers.add(user);
+    }
+
+    /**
+     * Возвращает играющего пользователя
+     */
+    public User getPlayUser() {
+        return this.linkedUsers.get(indexPlayUser);
+    }
+
+    /**
+     * Возаращает неиграющего пользователя
+     */
+    public User getDontPlayUser() {
+        return this.linkedUsers.get((indexPlayUser == 0) ? 1 : 0);
+    }
+
+    /**
+     * Возвращает второго пользователя относительно переданного пользователя
+     */
+    public User getAnotherUser(User user) {
+        if (getPlayUser().equals(user))
+            return getDontPlayUser();
+        return getPlayUser();
+    }
+
+    /**
+     * Передаём очередь загадывания слова
+     * @return true - успешная передача очереди хода
+     */
+    public Boolean nextPlayGame() {
+        if (this.indexPlayUser == 1)
+            return Boolean.FALSE;
+
+        this.indexPlayUser += 1;
+        return Boolean.TRUE;
     }
 }
