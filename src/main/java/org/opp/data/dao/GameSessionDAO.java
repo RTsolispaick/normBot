@@ -11,19 +11,6 @@ import org.opp.data.utils.HibernateSessionFactoryUtil;
  * Доступ к данным из таблицы сессий
  */
 public class GameSessionDAO {
-    public void save(GameSession gameSession) {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction tx1 = session.beginTransaction();
-        try {
-            session.save(gameSession);
-            tx1.commit();
-        } catch (final Exception e) {
-            tx1.rollback();
-            throw new RuntimeException(e);
-        } finally {
-            session.close();
-        }
-    }
 
     public void delete(GameSession gameSession) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();

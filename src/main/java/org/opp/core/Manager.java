@@ -54,6 +54,8 @@ public class Manager {
                     }
                     case "/multiplayer" -> {
                         GameSession gameSessionForDoubleGame = gameSessionRepository.getRandomGameSession();
+                        if (gameSessionForDoubleGame == null)
+                            gameSessionForDoubleGame = new GameSession(TypeGame.MULTI);
                         yield gameSessionHandler.managerGameSession(message, gameSessionForDoubleGame, user);
                     }
                     case "/stop" -> {
