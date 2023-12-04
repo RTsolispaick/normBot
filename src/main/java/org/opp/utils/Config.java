@@ -1,12 +1,8 @@
 package org.opp.utils;
 
 public class Config {
-    public String getName() {
-        return "";
-    }
-    public String getToken() {
-        return "";
-    }
+    public String getName() {return "";}
+    public String getTokenTG() {return "";}
     public String getDBhost(){return "";}
     public String getDBport(){return "";}
     public String getDBname(){return "";}

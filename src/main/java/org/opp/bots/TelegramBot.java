@@ -1,8 +1,9 @@
 package org.opp.bots;
 
 
-import org.opp.core.Manager;
+import org.opp.core.ManagerResponse;
 import org.opp.data.models.User;
+import org.opp.data.models.types.Platform;
 import org.opp.data.repositories.UserRepository;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -18,22 +19,20 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramBot extends TelegramLongPollingBot implements Bot {
     private final String token;
     private final String name;
-    private final Manager telegramManager;
+    private final ManagerResponse managerResponse;
     private final UserRepository userRepository;
 
     /**
-     * Конструктор ТГ бота
-     *
-     * @param name имя бота
-     * @param token токен
+     * Конструктор телеграмм бота
+     * @param managerResponse контролирует отправку сообщений пользователям
      */
-    public TelegramBot(String name, String token) {
+    public TelegramBot(String name, String token, ManagerResponse managerResponse) {
         this.name = name;
         this.token = token;
         this.userRepository = new UserRepository();
-        this.telegramManager = new Manager();
+        this.managerResponse = managerResponse;
+        managerResponse.setBotTG(this);
     }
-
 
     @Override
     public String getBotUsername() {
@@ -58,11 +57,9 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
                 Long chat_id = m.getChatId();
                 String name = m.getFrom().getFirstName();
 
-                User user = userRepository.login(chat_id, name);
-                String response = telegramManager.chooseState(m.getText().toLowerCase(), user);
+                User user = userRepository.login(Platform.TG, chat_id, name);
+                managerResponse.definitionOfResponse(m.getText().toLowerCase(), user);
                 userRepository.update(user);
-
-                sendMessage(m.getChatId(), response);
             }
         }
     }
@@ -90,10 +87,10 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
     /**
      * Запуск бота
      */
-    public static void launch(String name, String token) {
+    public static void launch(String name, String token, ManagerResponse managerResponse) {
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(new TelegramBot(name, token));
+            botsApi.registerBot(new TelegramBot(name, token, managerResponse));
         } catch (Exception e) {
             System.err.println(e);
         }

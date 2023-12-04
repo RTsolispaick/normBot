@@ -3,23 +3,23 @@ package org.opp;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.opp.core.handler.GameHandler;
+import org.opp.data.models.Game;
 import org.opp.data.models.User;
 import org.opp.data.models.Word;
-import org.opp.data.repositories.WordRepository;
+import org.opp.data.models.types.Platform;
 
 /**
  * Тест класса GameHandler
  */
 public class GameHandlerTest {
-    private final WordRepository wordRepositoryTest = Mockito.mock(WordRepository.class);
-    private final GameHandler gameHandlerTest = new GameHandler(wordRepositoryTest);
-    private final User user = new User(0L, "user");
+    private final GameHandler gameHandlerTest = new GameHandler();
+    private final Game testGame = new Game();
+    private final User user = new User(Platform.TG,0L, "user");
 
     @Before
-    public void SetUp(){
-        Mockito.when(wordRepositoryTest.getRandomWord()).thenReturn(new Word("теннис", "спорт"));
+    public void SetUp() {
+        testGame.initSingleGame(new Word("теннис", "спорт"));
     }
 
     /**
@@ -36,31 +36,31 @@ public class GameHandlerTest {
                             /easy - 15 попыток
                             /medium - 10 попыток
                             /hard - 5 попыток
-                            """, gameHandlerTest.updateStateUser("/game", user));
+                            """, gameHandlerTest.updateStatsUser("/game", user, testGame));
         Assert.assertEquals("""
                             Тебе нужно выбрать сложность!
-                            Если хочешь остановить игру /stop""", gameHandlerTest.updateStateUser("uncorrect input", user));
+                            Если хочешь остановить игру /stop""", gameHandlerTest.updateStatsUser("uncorrect input", user, testGame));
         Assert.assertEquals("""
                 Загадано слово: _ _ _ _ _ _
                 Тема: спорт
-                Количество попыток: 15""", gameHandlerTest.updateStateUser("/easy", user));
-        Assert.assertEquals("Тебе нужно вывести одну букву на русском языке!", gameHandlerTest.updateStateUser("/start", user));
-        Assert.assertEquals( "В слове есть только буквы русского алфавита!", gameHandlerTest.updateStateUser("F", user));
-        Assert.assertEquals("В слове есть только буквы русского алфавита!", gameHandlerTest.updateStateUser("+", user));
+                Количество попыток: 15""", gameHandlerTest.updateStatsUser("/easy", user, testGame));
+        Assert.assertEquals("Тебе нужно вывести одну букву на русском языке!", gameHandlerTest.updateStatsUser("/start", user, testGame));
+        Assert.assertEquals( "В слове есть только буквы русского алфавита!", gameHandlerTest.updateStatsUser("F", user, testGame));
+        Assert.assertEquals("В слове есть только буквы русского алфавита!", gameHandlerTest.updateStatsUser("+", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 15
                 Исключили:\s
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("т", user));
-        Assert.assertEquals("Ты уже вводил эту букву! Попробуй другую.", gameHandlerTest.updateStateUser("т", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("т", user, testGame));
+        Assert.assertEquals("Ты уже вводил эту букву! Попробуй другую.", gameHandlerTest.updateStatsUser("т", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 14
                 Исключили: я
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("я", user));
-        Assert.assertEquals("Ты уже вводил эту букву! Попробуй другую.", gameHandlerTest.updateStateUser("я", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("я", user, testGame));
+        Assert.assertEquals("Ты уже вводил эту букву! Попробуй другую.", gameHandlerTest.updateStatsUser("я", user, testGame));
     }
 
     /**
@@ -76,43 +76,42 @@ public class GameHandlerTest {
                             /easy - 15 попыток
                             /medium - 10 попыток
                             /hard - 5 попыток
-                            """, gameHandlerTest.updateStateUser("/game", user));
+                            """, gameHandlerTest.updateStatsUser("/game", user, testGame));
         Assert.assertEquals("""
                 Загадано слово: _ _ _ _ _ _
                 Тема: спорт
-                Количество попыток: 5""", gameHandlerTest.updateStateUser("/hard", user));
+                Количество попыток: 5""", gameHandlerTest.updateStatsUser("/hard", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 4
                 Исключили: я
 
                 Тема: спорт
-                _ _ _ _ _ _""", gameHandlerTest.updateStateUser("я", user));
+                _ _ _ _ _ _""", gameHandlerTest.updateStatsUser("я", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 4
                 Исключили: я
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("т", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("т", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 3
                 Исключили: яп
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("п", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("п", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 2
                 Исключили: япш
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("ш", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("ш", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 1
                 Исключили: япшу
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("у", user));
-        Assert.assertEquals("Ты проиграл! Загаданое слово: теннис!\n" +
-                "Если хочешь сыграть ещё раз напиши /game", gameHandlerTest.updateStateUser("д", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("у", user, testGame));
+        Assert.assertEquals("Ты проиграл! Загаданое слово: теннис!", gameHandlerTest.updateStatsUser("д", user, testGame));
 
         Assert.assertEquals(totalGameBefore, user.getTotalGameHard());
         Assert.assertEquals(totalWinGameBefore, user.getTotalWinHard());
@@ -131,43 +130,43 @@ public class GameHandlerTest {
                             /easy - 15 попыток
                             /medium - 10 попыток
                             /hard - 5 попыток
-                            """, gameHandlerTest.updateStateUser("/game", user));
+                            """, gameHandlerTest.updateStatsUser("/game", user, testGame));
         Assert.assertEquals("""
                 Загадано слово: _ _ _ _ _ _
                 Тема: спорт
-                Количество попыток: 5""", gameHandlerTest.updateStateUser("/hard", user));
+                Количество попыток: 5""", gameHandlerTest.updateStatsUser("/hard", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 5
                 Исключили:\s
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("т", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("т", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 4
                 Исключили: п
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("п", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("п", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 4
                 Исключили: п
 
                 Тема: спорт
-                т _ н н _ _""", gameHandlerTest.updateStateUser("н", user));
+                т _ н н _ _""", gameHandlerTest.updateStatsUser("н", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 4
                 Исключили: п
 
                 Тема: спорт
-                т _ н н _ с""", gameHandlerTest.updateStateUser("с", user));
+                т _ н н _ с""", gameHandlerTest.updateStatsUser("с", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 4
                 Исключили: п
 
                 Тема: спорт
-                т е н н _ с""", gameHandlerTest.updateStateUser("е", user));
-        Assert.assertEquals("Молодец! Ты отгадал слово: теннис!\n" +
-                "Если хочешь сыграть ещё раз напиши /game", gameHandlerTest.updateStateUser("и", user));
+                т е н н _ с""", gameHandlerTest.updateStatsUser("е", user, testGame));
+        Assert.assertEquals("Молодец! Ты отгадал слово: теннис!"
+                , gameHandlerTest.updateStatsUser("и", user, testGame));
 
         Assert.assertEquals(totalGameBefore, user.getTotalGameHard());
         Assert.assertEquals(totalWinGameBefore, user.getTotalWinHard());
@@ -186,73 +185,73 @@ public class GameHandlerTest {
                             /easy - 15 попыток
                             /medium - 10 попыток
                             /hard - 5 попыток
-                            """, gameHandlerTest.updateStateUser("/game", user));
+                            """, gameHandlerTest.updateStatsUser("/game", user, testGame));
         Assert.assertEquals("""
                 Загадано слово: _ _ _ _ _ _
                 Тема: спорт
-                Количество попыток: 10""", gameHandlerTest.updateStateUser("/medium", user));
+                Количество попыток: 10""", gameHandlerTest.updateStatsUser("/medium", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 9
                 Исключили: я
 
                 Тема: спорт
-                _ _ _ _ _ _""", gameHandlerTest.updateStateUser("я", user));
+                _ _ _ _ _ _""", gameHandlerTest.updateStatsUser("я", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 9
                 Исключили: я
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("т", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("т", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 8
                 Исключили: яп
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("п", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("п", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 7
                 Исключили: япш
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("ш", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("ш", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 6
                 Исключили: япшу
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("у", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("у", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 5
                 Исключили: япшуй
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("й", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("й", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 4
                 Исключили: япшуйк
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("к", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("к", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 3
                 Исключили: япшуйкц
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("ц", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("ц", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 2
                 Исключили: япшуйкцг
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("г", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("г", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 1
                 Исключили: япшуйкцгщ
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("щ", user));
-        Assert.assertEquals("Ты проиграл! Загаданое слово: теннис!\n" +
-                "Если хочешь сыграть ещё раз напиши /game", gameHandlerTest.updateStateUser("д", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("щ", user, testGame));
+        Assert.assertEquals("Ты проиграл! Загаданое слово: теннис!"
+                , gameHandlerTest.updateStatsUser("д", user, testGame));
 
         Assert.assertEquals(totalGameBefore, user.getTotalGameMedium());
         Assert.assertEquals(totalWinGameBefore, user.getTotalWinMedium());
@@ -271,43 +270,43 @@ public class GameHandlerTest {
                             /easy - 15 попыток
                             /medium - 10 попыток
                             /hard - 5 попыток
-                            """, gameHandlerTest.updateStateUser("/game", user));
+                            """, gameHandlerTest.updateStatsUser("/game", user, testGame));
         Assert.assertEquals("""
                 Загадано слово: _ _ _ _ _ _
                 Тема: спорт
-                Количество попыток: 10""", gameHandlerTest.updateStateUser("/medium", user));
+                Количество попыток: 10""", gameHandlerTest.updateStatsUser("/medium", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 10
                 Исключили:\s
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("т", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("т", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 9
                 Исключили: п
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("п", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("п", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 9
                 Исключили: п
 
                 Тема: спорт
-                т _ н н _ _""", gameHandlerTest.updateStateUser("н", user));
+                т _ н н _ _""", gameHandlerTest.updateStatsUser("н", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 9
                 Исключили: п
 
                 Тема: спорт
-                т _ н н _ с""", gameHandlerTest.updateStateUser("с", user));
+                т _ н н _ с""", gameHandlerTest.updateStatsUser("с", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 9
                 Исключили: п
 
                 Тема: спорт
-                т е н н _ с""", gameHandlerTest.updateStateUser("е", user));
-        Assert.assertEquals("Молодец! Ты отгадал слово: теннис!\n" +
-                "Если хочешь сыграть ещё раз напиши /game", gameHandlerTest.updateStateUser("и", user));
+                т е н н _ с""", gameHandlerTest.updateStatsUser("е", user, testGame));
+        Assert.assertEquals("Молодец! Ты отгадал слово: теннис!"
+                , gameHandlerTest.updateStatsUser("и", user, testGame));
 
         Assert.assertEquals(totalGameBefore, user.getTotalGameMedium());
         Assert.assertEquals(totalWinGameBefore, user.getTotalWinMedium());
@@ -326,103 +325,103 @@ public class GameHandlerTest {
                             /easy - 15 попыток
                             /medium - 10 попыток
                             /hard - 5 попыток
-                            """, gameHandlerTest.updateStateUser("/game", user));
+                            """, gameHandlerTest.updateStatsUser("/game", user, testGame));
         Assert.assertEquals("""
                 Загадано слово: _ _ _ _ _ _
                 Тема: спорт
-                Количество попыток: 15""", gameHandlerTest.updateStateUser("/easy", user));
+                Количество попыток: 15""", gameHandlerTest.updateStatsUser("/easy", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 14
                 Исключили: я
 
                 Тема: спорт
-                _ _ _ _ _ _""", gameHandlerTest.updateStateUser("я", user));
+                _ _ _ _ _ _""", gameHandlerTest.updateStatsUser("я", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 14
                 Исключили: я
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("т", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("т", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 13
                 Исключили: яп
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("п", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("п", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 12
                 Исключили: япш
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("ш", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("ш", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 11
                 Исключили: япшу
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("у", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("у", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 10
                 Исключили: япшуй
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("й", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("й", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 9
                 Исключили: япшуйк
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("к", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("к", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 8
                 Исключили: япшуйкц
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("ц", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("ц", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 7
                 Исключили: япшуйкцг
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("г", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("г", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 6
                 Исключили: япшуйкцгщ
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("щ", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("щ", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 5
                 Исключили: япшуйкцгщз
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("з", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("з", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 4
                 Исключили: япшуйкцгщзх
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("х", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("х", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 3
                 Исключили: япшуйкцгщзхф
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("ф", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("ф", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 2
                 Исключили: япшуйкцгщзхфъ
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("ъ", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("ъ", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 1
                 Исключили: япшуйкцгщзхфъч
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("ч", user));
-        Assert.assertEquals("Ты проиграл! Загаданое слово: теннис!\n" +
-                "Если хочешь сыграть ещё раз напиши /game", gameHandlerTest.updateStateUser("д", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("ч", user, testGame));
+        Assert.assertEquals("Ты проиграл! Загаданое слово: теннис!"
+                , gameHandlerTest.updateStatsUser("д", user, testGame));
 
         Assert.assertEquals(totalGameBefore, user.getTotalGameEasy());
         Assert.assertEquals(totalWinGameBefore, user.getTotalWinEasy());
@@ -441,43 +440,43 @@ public class GameHandlerTest {
                             /easy - 15 попыток
                             /medium - 10 попыток
                             /hard - 5 попыток
-                            """, gameHandlerTest.updateStateUser("/game", user));
+                            """, gameHandlerTest.updateStatsUser("/game", user, testGame));
         Assert.assertEquals("""
                 Загадано слово: _ _ _ _ _ _
                 Тема: спорт
-                Количество попыток: 15""", gameHandlerTest.updateStateUser("/easy", user));
+                Количество попыток: 15""", gameHandlerTest.updateStatsUser("/easy", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 15
                 Исключили:\s
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("т", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("т", user, testGame));
         Assert.assertEquals("""
                 Не угадал! Осталось попыток: 14
                 Исключили: п
 
                 Тема: спорт
-                т _ _ _ _ _""", gameHandlerTest.updateStateUser("п", user));
+                т _ _ _ _ _""", gameHandlerTest.updateStatsUser("п", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 14
                 Исключили: п
 
                 Тема: спорт
-                т _ н н _ _""", gameHandlerTest.updateStateUser("н", user));
+                т _ н н _ _""", gameHandlerTest.updateStatsUser("н", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 14
                 Исключили: п
 
                 Тема: спорт
-                т _ н н _ с""", gameHandlerTest.updateStateUser("с", user));
+                т _ н н _ с""", gameHandlerTest.updateStatsUser("с", user, testGame));
         Assert.assertEquals("""
                 Правильно!. Осталось попыток: 14
                 Исключили: п
 
                 Тема: спорт
-                т е н н _ с""", gameHandlerTest.updateStateUser("е", user));
-        Assert.assertEquals("Молодец! Ты отгадал слово: теннис!\n" +
-                "Если хочешь сыграть ещё раз напиши /game", gameHandlerTest.updateStateUser("и", user));
+                т е н н _ с""", gameHandlerTest.updateStatsUser("е", user, testGame));
+        Assert.assertEquals("Молодец! Ты отгадал слово: теннис!"
+                , gameHandlerTest.updateStatsUser("и", user, testGame));
 
         Assert.assertEquals(totalGameBefore, user.getTotalGameEasy());
         Assert.assertEquals(totalWinGameBefore, user.getTotalWinEasy());

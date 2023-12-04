@@ -5,9 +5,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.opp.core.handler.IdleHandler;
 import org.opp.data.models.User;
-import org.opp.data.models.Word;
-import org.opp.data.models.types.Difficult;
-import org.opp.data.models.types.StatusGame;
+import org.opp.data.models.types.Platform;
 import org.opp.data.repositories.UserRepository;
 
 import java.util.ArrayList;
@@ -19,33 +17,7 @@ import java.util.List;
 public class IdleHandlerTest {
     private final UserRepository userRepository = Mockito.mock(UserRepository.class);
     private final IdleHandler testIdleHandler = new IdleHandler(userRepository);
-    private final User user = new User(0L, "name");
-
-    /**
-     * Тест команды /stop
-     */
-    @Test
-    public void stop_Test() {
-        Integer totalGameBefore;
-        user.setStateGame(new Word("word", "category"));
-        user.getUserGame().setDifficult(Difficult.EASY);
-
-        totalGameBefore = user.getTotalGameEasy();
-        Assert.assertEquals(testIdleHandler.getResponse("/stop", user), """
-                        Игра остановлена!
-                        Напиши /game, если хочешь сыграть ещё раз""");
-        Assert.assertEquals(user.getTotalGameEasy(), totalGameBefore);
-
-        user.setStateGame(new Word("word", "category"));
-        user.getUserGame().setStatusGame(StatusGame.GAME);
-        user.getUserGame().setDifficult(Difficult.EASY);
-
-        totalGameBefore = user.getTotalGameEasy() + 1;
-        Assert.assertEquals(testIdleHandler.getResponse("/stop", user), """
-                        Игра остановлена!
-                        Напиши /game, если хочешь сыграть ещё раз""");
-        Assert.assertEquals(user.getTotalGameEasy(), totalGameBefore);
-    }
+    private final User user = new User(Platform.TG, 0L, "name");
 
     /**
      * Тест команды /stats
@@ -90,15 +62,15 @@ public class IdleHandlerTest {
     public void top_Test() {
         List<User> userList = new ArrayList<>();
 
-        User user1 = new User(0L, "vova");
+        User user1 = new User(Platform.TG, 0L, "vova");
         userList.add(user1);
-        User user2 = new User(0L, "peta");
+        User user2 = new User(Platform.VK, 0L, "peta");
         userList.add(user2);
-        User user3 = new User(0L, "goha");
+        User user3 = new User(Platform.VK, 0L, "goha");
         userList.add(user3);
-        User user4 = new User(0L, "ivan");
+        User user4 = new User(Platform.TG, 0L, "ivan");
         userList.add(user4);
-        User user5 = new User(0L, "leha");
+        User user5 = new User(Platform.TG, 0L, "leha");
         userList.add(user5);
 
         Mockito.when(userRepository.findTop5()).thenReturn(userList);
@@ -110,7 +82,7 @@ public class IdleHandlerTest {
                 3. goha = 0
                 4. ivan = 0
                 5. leha = 0
-                
+
                 Твой рейтинг: 0""", testIdleHandler.getResponse("/top", user1));
     }
 

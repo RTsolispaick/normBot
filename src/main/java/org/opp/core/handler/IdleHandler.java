@@ -1,13 +1,12 @@
 package org.opp.core.handler;
 
 import org.opp.data.models.User;
-import org.opp.data.models.types.StatusGame;
 import org.opp.data.repositories.UserRepository;
 
 import java.util.List;
 
 /**
- * Отвечает за определение ответа пользователю, несвязанного с игровым процессом.
+ * Отвечает за определение ответа, несвязанного с игровым процессом.
  */
 public class IdleHandler {
     private final UserRepository userRepository;
@@ -25,9 +24,9 @@ public class IdleHandler {
     }
 
     /**
-     * Реализует внеигровую логику. Определяет ответ пользователю на его сообщение.
+     * Реализует внеигровую логику. Определяет ответ пользователю на его сообщения вне игры.
      * @param message сообщение пользователя
-     * @param user объект содержащий данные пользователя и игру, принадлежащую данному пользователю
+     * @param user объект содержащий данные пользователя и игровую сессию, к которой он принадлежит
      * @return ответ на сообщение пользователя
      */
     public String getResponse(String message, User user) {
@@ -38,7 +37,8 @@ public class IdleHandler {
                         Если ты не знаком с правилами напиши /rules.
                                             
                         Доступные команды:
-                        /game - начать игру
+                        /game - начать однопользовательску игру
+                        /multiplayer - cыграть с другим человеком
                         /stats - твоя статистика
                         /top - топ игроков""";
             }
@@ -51,21 +51,6 @@ public class IdleHandler {
                         Конец игры наступает, либо когда пользователь отгадывает всё слово, либо когда у пользователя заканчиваются буквы.
                                             
                         Теперь, когда ты узнал правила, можещь написать /game для начала игры.""";
-            }
-            case "/stop" -> {
-                if (!user.getStatusGame().equals(StatusGame.STARTGAME)) {
-                    switch (user.getDifficultGame()) {
-                        case EASY -> user.setTotalGameEasy(user.getTotalGameEasy() + 1);
-                        case MEDIUM -> user.setTotalGameMedium(user.getTotalGameMedium() + 1);
-                        case HARD -> user.setTotalGameHard(user.getTotalGameHard() + 1);
-                    }
-                }
-
-                user.setStateIdle();
-
-                return """
-                        Игра остановлена!
-                        Напиши /game, если хочешь сыграть ещё раз""";
             }
             case "/stats" -> {
                 return "Количество отгаданных слов:\n" +

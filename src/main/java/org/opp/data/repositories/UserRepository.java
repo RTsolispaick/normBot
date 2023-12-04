@@ -2,6 +2,7 @@ package org.opp.data.repositories;
 
 import org.opp.data.dao.UserDAO;
 import org.opp.data.models.User;
+import org.opp.data.models.types.Platform;
 
 import java.util.List;
 
@@ -13,11 +14,6 @@ public class UserRepository {
 
     public UserRepository() {
         this.userDAO = new UserDAO();
-    }
-    public User findByChatID(Long chat_id) {return userDAO.findByChatId(chat_id);}
-
-    public void save(User user) {
-        userDAO.save(user);
     }
 
     public void update(User user) {
@@ -34,10 +30,10 @@ public class UserRepository {
      * @param name имя пользователя
      * @return пользователя
      */
-    public User login(Long chat_id, String name){
+    public User login(Platform platform, Long chat_id, String name){
         User user = userDAO.findByChatId(chat_id);
         if (user == null){
-            user = new User(chat_id, name);
+            user = new User(platform, chat_id, name);
             userDAO.save(user);
         }
         if(!user.getName().equals(name)){

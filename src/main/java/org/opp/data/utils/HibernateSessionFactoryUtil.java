@@ -4,6 +4,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.opp.data.models.Game;
+import org.opp.data.models.GameSession;
 import org.opp.data.models.User;
 import org.opp.data.models.Word;
 import org.opp.utils.Config;
@@ -25,6 +26,7 @@ public class HibernateSessionFactoryUtil {
                 configuration.addAnnotatedClass(User.class);
                 configuration.addAnnotatedClass(Word.class);
                 configuration.addAnnotatedClass(Game.class);
+                configuration.addAnnotatedClass(GameSession.class);
                 StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
                 sessionFactory = configuration.buildSessionFactory(builder.build());
             } catch (Exception e) {
