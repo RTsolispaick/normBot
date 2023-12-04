@@ -45,7 +45,7 @@ public class ManagerTest {
                 .managerGameSession(anyString(), any(GameSession.class), any(User.class));
 
         testManager.chooseState("/multiplayer", user);
-        verify(testGameSessionHandler, times(1))
+        verify(testGameSessionHandler, times(2))
                 .managerGameSession(anyString(), any(GameSession.class), any(User.class));
 
         user.setStateIdle();
