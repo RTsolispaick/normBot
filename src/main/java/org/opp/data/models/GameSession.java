@@ -24,10 +24,10 @@ public class GameSession {
     private StateSession stateSession;
     @Column(name = "index_play")
     private Integer indexPlayUser;
-    @OneToMany(mappedBy = "userGameSession", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userGameSession", fetch = FetchType.EAGER)
     @OrderBy("indexInGameSession ASC")
     private List<User> linkedUsers;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "game_id")
     private Game game;
 
