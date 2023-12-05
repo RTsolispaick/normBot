@@ -30,13 +30,15 @@ public class Game {
     @Enumerated(EnumType.STRING)
     private Difficult difficult;
 
-    public Game() {}
+    public Game() {
+        this.statusGame = StatusGame.STARTGAME;
+    }
 
     /**
-     * Инициализация игры
-     * @param word слово для игры в висилицу
+     * Инициализация однопользовательской игры
+     * @param word слово для игры
      */
-    public void initGame(Word word){
+    public void initSingleGame(Word word){
         this.word = word.getWord();
         this.category = word.getCategory();
         this.gameViewOfTheWord = "_ ".repeat(word.getWord().length() - 1) + "_";
@@ -44,12 +46,13 @@ public class Game {
         this.statusGame = StatusGame.STARTGAME;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    /**
+     * Инциализация многопльзователськой игры
+     */
+    public void initMultiGame(){
+        this.gameViewOfTheWord = "_ ".repeat(word.length() - 1) + "_";
+        this.wordFromExcludedLetters = "";
+        this.statusGame = StatusGame.STARTGAME;
     }
 
     public String getWord() {

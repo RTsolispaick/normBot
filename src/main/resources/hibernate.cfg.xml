@@ -21,5 +21,6 @@
         <mapping class="org.opp.data.models.User"/>
         <mapping class="org.opp.data.models.Word"/>
         <mapping class="org.opp.data.models.Game"/>
+        <mapping class="org.opp.data.models.GameSession"/>
     </session-factory>
 </hibernate-configuration>

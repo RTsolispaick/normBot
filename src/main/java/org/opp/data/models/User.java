@@ -1,9 +1,10 @@
 package org.opp.data.models;
 
 import jakarta.persistence.*;
-import org.opp.data.models.types.Difficult;
+import org.opp.data.models.types.Platform;
 import org.opp.data.models.types.State;
-import org.opp.data.models.types.StatusGame;
+
+import java.util.Objects;
 
 /**
  * Класс пользователя
@@ -14,6 +15,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "platform")
+    @Enumerated(EnumType.STRING)
+    private Platform platform;
     @Column(name = "name")
     private String name;
     @Column(name = "chat_id")
@@ -35,9 +39,11 @@ public class User {
     private Integer totalWinHard;
     @Column(name = "rating")
     private Integer ratingUser;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "game_id")
-    private Game userGame;
+    private GameSession userGameSession;
+    @Column(name = "index_in_session")
+    private Integer indexInGameSession;
 
     /**
      * Пустой конструкток пользователя
@@ -46,11 +52,13 @@ public class User {
 
     /**
      * Конструк пользователя
+     * @param platform платформа, с которой обращается пользователь
      * @param chat_id идентификатор юзера на платформе
      * @param name Имя пользователя
      */
-    public User(Long chat_id, String name) {
+    public User(Platform platform, Long chat_id, String name) {
         this.state = State.IDLE;
+        this.platform = platform;
         this.name = name;
         this.chat_id = chat_id;
         this.totalGameEasy = 0;
@@ -60,46 +68,27 @@ public class User {
         this.totalWinMedium = 0;
         this.totalWinHard = 0;
         this.ratingUser = 0;
-        this.userGame = new Game();
     }
 
     /**
-     * геттер для получения текущего состояния игры
-     * @return состояние игры пользователя
-     */
-    public StatusGame getStatusGame(){
-        return this.userGame.getStatusGame();
-    }
-
-    public Difficult getDifficultGame() {
-        return this.userGame.getDifficult();
-    }
-
-    /**
-     * сеттер для того, чтобы задать состояние покоя и пересчитать рейтинг пользователя
+     * Установливает состояние покоя и пересчитать рейтинг
      */
     public void setStateIdle() {
         this.state = State.IDLE;
+        this.userGameSession = null;
         this.ratingUser = 5 * (this.totalWinHard * 2 - this.totalGameHard) +
                 3 * (this.totalWinMedium * 2 - this.totalGameMedium) +
                 (this.totalWinEasy * 2 - this.totalGameEasy);
     }
 
     /**
-     * Сеттер, чтобы задать состояние игры и инициализировать игру по слову
-     * @param word слово для игры
+     * Устанавливет состояние игры и присоединяет пользователя к сессии
      */
-    public void setStateGame(Word word) {
+    public void setStateGame(GameSession gameSession) {
         this.state = State.GAME;
-        this.userGame.initGame(word);
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+        this.userGameSession = gameSession;
+        this.indexInGameSession = gameSession.getLinkedUsers().size();
+        this.userGameSession.addUser(this);
     }
 
     public String getName() {
@@ -114,16 +103,8 @@ public class User {
         return chat_id;
     }
 
-    public void setChat_id(Long chat_id) {
-        this.chat_id = chat_id;
-    }
-
     public State getState() {
         return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
     public Integer getTotalGameEasy() {
@@ -178,15 +159,31 @@ public class User {
         return ratingUser;
     }
 
-    public void setRatingUser(Integer ratingUser) {
-        this.ratingUser = ratingUser;
+    public Platform getPlatform() {
+        return platform;
     }
 
-    public Game getUserGame() {
-        return userGame;
+    public GameSession getUserGameSession() {
+        return userGameSession;
     }
 
-    public void setUserGame(Game userGame) {
-        this.userGame = userGame;
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
