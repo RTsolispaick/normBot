@@ -24,11 +24,23 @@ Hangman Game bot
 ```
 git clone https://github.com/RTsolispaick/normBot.git
 ```
-2. Enter your token and bot name in Config class and add database info (host, port, name, user, pass).
+2. Enter your token and bot name and add database info (host, port, name, user, pass) in env.
 
-3. And run.
-  
+3. And run.  
+
+## Deploy
+
+1. Зарегистрироваться на Yandex Cloud
+2. Создать виртуальную машину
+3. Подключиться к ВМ через ssh
+4. Установить на ВМ jre-17, maven, git
+5. Клонировать на ВМ проект с github
+6. Настроить переменные окружения
+7. Собрать проект на ВМ через maven
+8. Запустить проект
+
 ## Игра для нескольких пользователей(П1 и П2):
+
 П1: /play_with_friend  
 Б: Свободных игр нет!  
 Придётся подождать.
